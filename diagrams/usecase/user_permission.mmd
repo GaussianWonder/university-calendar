@@ -1,0 +1,13 @@
+sequenceDiagram
+  actor Staff
+  actor Teacher
+  actor Admin
+
+  Staff ->> Teacher: Request a permission privilage
+  Teacher -->> Staff: Sorry, I don't have the privilege
+
+  Teacher ->> Admin: Request a permission privilage
+  Admin ->> Teacher: Validate permission request
+
+  Staff ->> Teacher: Request a permission privilage
+  Teacher ->> Staff: Validate permission request

@@ -1,0 +1,15 @@
+sequenceDiagram
+  actor Student
+  actor Teacher
+  actor Admin
+
+  Admin ->> Teacher: Invite to faculty
+  Note right of Teacher: Accept invitation
+
+  Admin ->> Teacher: Assign courses
+
+  Teacher ->> Student: Invite to class
+
+  Student ->> Teacher: Accept invitation
+
+  Note over Student: ~ Profile Onboarding

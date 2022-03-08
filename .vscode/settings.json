@@ -1,0 +1,9 @@
+{
+  "editor.tabSize": 2,
+  "markdownlint.config": {
+    "default": true,
+    "MD033": false,
+    "no-hard-tabs": true
+  },
+  "markdownlint.run": "onSave"
+}

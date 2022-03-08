@@ -1,0 +1,87 @@
+classDiagram
+  Enrollment --* "many" FacultyPerson : Contains
+  Faculty --* Enrollment
+  Faculty --* "many" University : Contains
+  Course --* "many" Faculty : Has
+  Task --* "many" Course : Has
+  DateRange --* Task
+
+  Faculty ..|> ContainsWork
+  Course ..|> ContainsWork
+  Faculty ..|> ContainsWork
+
+  Person <|-- FacultyPerson
+  FacultyPerson <|-- Student
+  FacultyPerson <|-- Teacher
+  FacultyPerson <|-- Staff
+
+  Student ..|> ContainsWork
+  Teacher ..|> ContainsWork
+  Staff ..|> ContainsWork
+
+  Student ..|> Work
+  Teacher ..|> Work
+  Staff ..|> Work
+
+
+  class Person {
+    <<abstract>>
+    -String name
+    -String email
+    -Date birthDate
+    -String phoneNumber
+    -String cnp
+  }
+  class FacultyPerson {
+    -List~Enrollment~ enrollments
+  }
+  class Work {
+    <<interface>>
+    +work()
+    +complete(Task) boolean
+    +isCompleted(Task) boolean
+  }
+  class ContainsWork {
+    <<interface>>
+    +hasWorkNow() boolean
+    +todoNow() Task
+    +todoToday() List~Task~
+    +todoWeek() List~Task~
+    +todoMonth() List~Task~
+  }
+  class Teacher {
+  }
+  class Staff {
+  }
+  class Student {
+  }
+
+  class Enrollment {
+    -String ID
+    -Faculty faculty
+  }
+  class University {
+    -String name
+    -List~Faculty~ faculties
+  }
+  class Faculty {
+    -List~Course~ courses
+    -String name
+    -String description
+  }
+  class Course {
+    -String name
+    -String description
+    -Set~Date, Task~ tasks
+  }
+  class Task {
+    -DateRange range
+    -String name
+    -String description
+    +onDate() Date
+  }
+  class DateRange {
+    -Date start
+    -Date end
+    +onDate() Date
+  }

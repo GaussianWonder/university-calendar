@@ -1,0 +1,11 @@
+sequenceDiagram
+  participant Task
+  participant Course
+  actor Scheduler
+
+  Scheduler ->> Course: Assert creation
+  Note over Scheduler, Course: The course is created
+  Scheduler ->> Course: Visit dedicated page
+  Scheduler ->> Task: Assert availability
+  Note over Task, Course: The task fits in the timeframe
+  Scheduler ->> Task: Create

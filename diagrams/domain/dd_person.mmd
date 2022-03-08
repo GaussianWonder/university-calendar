@@ -1,0 +1,53 @@
+classDiagram
+  Enrollment --* "many" FacultyPerson : Contains
+
+  Person <|-- FacultyPerson
+  FacultyPerson <|-- Student
+  FacultyPerson <|-- Teacher
+  FacultyPerson <|-- Staff
+
+  Student ..|> ContainsWork
+  Teacher ..|> ContainsWork
+  Staff ..|> ContainsWork
+
+  Student ..|> Work
+  Teacher ..|> Work
+  Staff ..|> Work
+
+
+  class Person {
+    <<abstract>>
+    -String name
+    -String email
+    -Date birthDate
+    -String phoneNumber
+    -String cnp
+  }
+  class FacultyPerson {
+    -List~Enrollment~ enrollments
+  }
+  class Work {
+    <<interface>>
+    +work()
+    +complete(Task) boolean
+    +isCompleted(Task) boolean
+  }
+  class ContainsWork {
+    <<interface>>
+    +hasWorkNow() boolean
+    +todoNow() Task
+    +todoToday() List~Task~
+    +todoWeek() List~Task~
+    +todoMonth() List~Task~
+  }
+  class Teacher {
+  }
+  class Staff {
+  }
+  class Student {
+  }
+
+  class Enrollment {
+    -String ID
+    -Faculty faculty
+  }

@@ -1,0 +1,9 @@
+sequenceDiagram
+  participant Course
+  participant Faculty
+  actor Admin
+
+  Admin ->> Faculty: Create
+  Admin ->> Faculty: Visit dedicated page
+  Admin ->> Course: Create
+  Note over Course, Faculty: Course is linked to Faculty
