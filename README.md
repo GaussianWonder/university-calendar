@@ -11,11 +11,9 @@
   - [Project specification](#project-specification)
   - [Domain model](#domain-model)
     - [Person Domain](#person-domain)
-    - [University Domain](#university-domain)
-  - [Usecase Model](#usecase-model)
+  - [Usecases](#usecases)
+    - [University onboarding](#university-onboarding)
     - [User role assignation](#user-role-assignation)
-    - [User permission](#user-permission)
-    - [Faculty & Course creation](#faculty--course-creation)
     - [Assigning tasks](#assigning-tasks)
     - [Calendar check](#calendar-check)
   - [Users and stakeholers](#users-and-stakeholers)
@@ -35,217 +33,113 @@ The current delivery model envisioned is **Hosted Software**, not **SaaS**.
 ```mermaid
 classDiagram
   direction TB
-  Enrollment --* "many" FacultyPerson : Contains
+  FacultyPerson "1" --> "*" Role : Has
+  Role --> Student
+  Role --> Teacher
+  Role --> Staff
 
-  Person <|-- FacultyPerson
-  FacultyPerson <|-- Student
-  FacultyPerson <|-- Teacher
-  FacultyPerson <|-- Staff
+  University "1" --> "*" Faculty : Contains
+  Faculty "1" --> "*" Course
+  Course "1" --> "*" Task
+  FacultyPerson "1" --> "*" Enrollment
+  Enrollment "1" --> "1" Faculty
 
-  Student ..|> ContainsWork
-  Teacher ..|> ContainsWork
-  Staff ..|> ContainsWork
+  Teacher --> Student : Assign course
+  Teacher --> Staff : Assign course
 
-  Student ..|> Work
-  Teacher ..|> Work
-  Staff ..|> Work
+  Admin --> "*" FacultyPerson : Assign role
+  Admin --> "1" University : Create
+  Admin --> "*" Faculty  : Create
 
-  class Person {
-    -String name
-    -String email
-    -Date birthDate
-    -String phoneNumber
-    -String cnp
-  }
-  class FacultyPerson {
-    -List~Enrollment~ enrollments
-  }
-  class Work {
-    +work()
-    +complete(Task) boolean
-    +isCompleted(Task) boolean
-  }
-  class ContainsWork {
-    +hasWorkNow() boolean
-    +todoNow() Task
-    +todoToday() List~Task~
-    +todoWeek() List~Task~
-    +todoMonth() List~Task~
-  }
-  class Teacher {
-  }
-  class Staff {
-  }
-  class Student {
-  }
+  FacultyPerson "1" --> "1" Calendar : View
+  Calendar "1" --> "*" Task : Display
 
-  class Enrollment {
-    -String ID
-    -Faculty faculty
-  }
+  class Admin { }
+  class FacultyPerson { }
+  class Teacher { }
+  class Staff { }
+  class Student { }
+  class Enrollment { }
+  class University { }
+  class Faculty { }
+  class Course { }
+  class Task { }
+  class Calendar { }
 ```
 
 <div class="page" />
 
-### University Domain
+## Usecases
 
-```mermaid
-classDiagram
-  direction TB
-  Faculty --* Enrollment
-  Faculty --* "many" University : Contains
-  Course --* "many" Faculty : Has
-  Task --* "many" Course : Has
+### University onboarding
 
-  Faculty ..|> ContainsWork
-  Course ..|> ContainsWork
-  Faculty ..|> ContainsWork
+| Level              | Main actor |
+| ------------------ | ---------- |
+| Administrator-Goal | Admin      |
 
-  class ContainsWork {
-    +hasWorkNow() boolean
-    +todoNow() Task
-    +todoToday() List~Task~
-    +todoWeek() List~Task~
-    +todoMonth() List~Task~
-  }
-  class Enrollment {
-    -String ID
-    -Faculty faculty
-  }
-  class University {
-    -String name
-    -List~Faculty~ faculties
-  }
-  class Faculty {
-    -List~Course~ courses
-    -String name
-    -String description
-  }
-  class Course {
-    -String name
-    -String description
-    -Set~Date, Task~ tasks
-  }
-  class Task {
-    -DateRange range
-    -String name
-    -String description
-    +onDate() Date
-  }
-```
+This usecase is aimed for the **onboarding of the application** itsef. Before having users and managing resources, the administrator needs to **create** a **university**, its **faculties**, its **courses** and optionally have a yearly schedule set up. The latter step is optional because other users can be assigned to this task *(such as teachers with higher privileges)*.
 
-<div class="page" />
+**Success scenario:**
 
-## Usecase Model
+1. Admin accesses the panel.
+2. He sees the application onboarding page, since the app is not yet set up.
+3. He completes the forms sequentially.
+4. He sets up the university details.
+5. He creates empty faculties.
+6. He creates empty courses.
+7. He sets up Faculty-Course relations.
+8. He optionally sets up the schedule for each course.
 
 ### User role assignation
 
-This usecase covers **invitations** to the platform as well. Once an actor is invited, it also receives a platform invitation followed by a **mandatory profile onboarding**.
+| Level              | Main actor |
+| ------------------ | ---------- |
+| Administrator-Goal | Admin      |
 
-```mermaid
-sequenceDiagram
-  actor Student
-  actor Teacher
-  actor Admin
+This usecase covers **invitations** to the platform as well. Once an actor is invited, it also receives a platform invitation followed by a **mandatory profile onboarding**. Role assignation is important because functionality on the platform is permission driven. **Teacher**, **Student** and **Staff** are just permission presets.
 
-  Admin ->> Teacher: Invite to faculty
-  Note right of Teacher: Accept invitation
+**Success scenario:**
 
-  Admin ->> Teacher: Assign courses
-
-  Teacher ->> Student: Invite to class
-
-  Student ->> Teacher: Accept invitation
-
-  Note over Student: ~ Profile Onboarding
-```
-
-From now on, users can use the platform independently of each other.
-
-<div class="page" />
-
-### User permission
-
-Some **teachers** can have *different permissions* on the platform. For example, a teacher can be an **administrator** given the right permissions.
-
-The same goes for **Staff members**.
-
-```mermaid
-sequenceDiagram
-  actor Staff
-  actor Teacher
-  actor Admin
-
-  Staff ->> Teacher: Request a permission privilage
-  Teacher -->> Staff: Sorry, I don't have the privilege
-
-  Teacher ->> Admin: Request a permission privilage
-  Admin ->> Teacher: Validate permission request
-
-  Staff ->> Teacher: Request a permission privilage
-  Teacher ->> Staff: Validate permission request
-```
-
-Each actor can independently assign permissions to other actors if they have the required priviledges.
-
-<div class="page" />
-
-### Faculty & Course creation
-
-This usecase covers the **admin** creating a **faculty** for a university and assigning **courses** to it. Currently, courses **are not independent** of faculties, since we don't cover the case in which a teacher has activity across *multiple universities*. Each course is unique to a faculty.
-
-```mermaid
-sequenceDiagram
-  participant Course
-  participant Faculty
-  actor Admin
-
-  Admin ->> Faculty: Create
-  Admin ->> Faculty: Visit dedicated page
-  Admin ->> Course: Create
-  Note over Course, Faculty: Course is linked to Faculty
-```
+1. Admin accesses the panel and visits the user management page.
+2. Admin invites a new user to the platform.
+3. Admin assigns roles prior to the new user onboarding.
+4. New user can do specific role workflows.
 
 <div class="page" />
 
 ### Assigning tasks
 
+| Level        | Main actor |
+| ------------ | ---------- |
+| Teacher-Goal | Teacher    |
+
 Since permissions exist, the administrator **is not the only one** capable of creating and assigning tasks. Because of this, a different actor name will be used to describe the user which is able to create tasks.
 
-```mermaid
-sequenceDiagram
-  participant Task
-  participant Course
-  actor Scheduler
+**Success scenario:**
 
-  Scheduler ->> Course: Assert creation
-  Note over Scheduler, Course: The course is created
-  Scheduler ->> Course: Visit dedicated page
-  Scheduler ->> Task: Assert availability
-  Note over Task, Course: The task fits in the timeframe
-  Scheduler ->> Task: Create
-```
+1. Teacher selects a course.
+2. Teacher invites one of his Students to the selected course.
 
-<div class="page" />
+Every task of the course will now be visible for each student of the course.
 
 ### Calendar check
 
-Viewing the calendar and inspecting individual elements is trivial.
+Viewing the calendar and inspecting tasks is the target of the application. This action is not targetted to any kind of actor specifically, every user has the base privileges to view the calendar.
 
-```mermaid
-sequenceDiagram
-  participant Calendar
-  actor User
+**Success scenario:**
 
-  User ->> Calendar: Visit dedicated page
-  User ->> Calendar: Inspect monthly overview
-  User ->> Calendar: Inspect weekly overview
-  User ->> Calendar: Click date
-  User ->> Calendar: Inspect detailed tasks
-```
+1. User accesses the calendar
+2. User inspects the weekly view
+3. Student cries
+
+<div style="width: 100%; height: 490px; display:flex; flex-direction:row; align-items:center; justify-content: center;">
+<img src="diagrams/usecase/usecase.png" alt="usecase diagram" style="object-fit: cover;" />
+</div>
+
+<div class="page" />
 
 ## Users and stakeholers
 
-The stakeholders of this application are **university leading members**. They are the one who benefit from the platform and they can be positively or negatively affected by the business.
+The stakeholders of this application are **university leading members**. They are the one who benefit from the platform and they can be positively or negatively affected by the business. They manage all resources on the platform.
 
-As a consequence, the users of the application are **students**, whose presence on the platform is optional.
+As a consequence, the users of the application are **students**, whose presence on the platform is also optional.

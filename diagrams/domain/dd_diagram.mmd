@@ -1,0 +1,35 @@
+classDiagram
+  direction TB
+  FacultyPerson "1" --> "*" Role : Has
+
+  Role --> Student
+  Role --> Teacher
+  Role --> Staff
+
+  University "1" --> "*" Faculty : Contains
+  Faculty "1" --> "*" Course
+  Course "1" --> "*" Task
+  FacultyPerson "1" --> "*" Enrollment
+  Enrollment "1" --> "1" Faculty
+
+  Teacher --> Student : Assign course
+  Teacher --> Staff : Assign course
+
+  Admin --> "*" FacultyPerson : Assign role
+  Admin --> "1" University : Create
+  Admin --> "*" Faculty  : Create
+
+  FacultyPerson "1" --> "1" Calendar : View
+  Calendar "1" --> "*" Task : Display
+
+  class Admin { }
+  class FacultyPerson { }
+  class Teacher { }
+  class Staff { }
+  class Student { }
+  class Enrollment { }
+  class University { }
+  class Faculty { }
+  class Course { }
+  class Task { }
+  class Calendar { }
