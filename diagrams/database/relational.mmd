@@ -1,0 +1,43 @@
+erDiagram
+  Users ||--|{ Roles : has
+  Users ||--|| Profile: has
+  Users {
+    string username
+    string password
+  }
+  Roles {
+    string name
+  }
+  Profile {
+    string name
+    string email
+    string phone
+    string cnp
+    date birth
+  }
+  Users ||--|{ Enrolment : can_have
+  Enrolment {
+    int faculty_id
+    int user_id
+  }
+  Enrolment }|--o{ Faculty : part_of
+  University ||--|{ Faculty : contains
+  University {
+    string name
+  }
+  Faculty ||--|{ Courses : contains
+  Faculty {
+    string name
+  }
+  Courses ||--|{ Tasks : contains
+  Courses {
+    string name
+    string description
+  }
+  Roles ||--|{ Tasks : for
+  Tasks {
+    role target
+    string name
+    date start
+    date end
+  }

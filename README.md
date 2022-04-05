@@ -17,6 +17,14 @@
     - [Assigning tasks](#assigning-tasks)
     - [Calendar check](#calendar-check)
   - [Users and stakeholers](#users-and-stakeholers)
+  - [Architecture Design](#architecture-design)
+    - [Non-functional requirements](#non-functional-requirements)
+      - [Security](#security)
+      - [Scalability](#scalability)
+      - [Responsive design](#responsive-design)
+      - [Performance and perceived quickness](#performance-and-perceived-quickness)
+    - [Design constraints](#design-constraints)
+  - [Database](#database)
 
 <div class="page" />
 
@@ -143,3 +151,109 @@ Viewing the calendar and inspecting tasks is the target of the application. This
 The stakeholders of this application are **university leading members**. They are the one who benefit from the platform and they can be positively or negatively affected by the business. They manage all resources on the platform.
 
 As a consequence, the users of the application are **students**, whose presence on the platform is also optional.
+
+## Architecture Design
+
+The Design principle for this web app's backend is a `3 Layer Architecture`.
+
+<div style="width: 100%; height: 490px; display:flex; flex-direction:row; align-items:center; justify-content: center;">
+<img src="./assets/layered_arch.png" style="object-fit: cover;" />
+</div>
+
+1. A controller’s sole purpose is to receive requests for the application and deal with routes.
+2. The service layer should only include business logic. For example, all the CRUD operations and methods to determine how data can be created, stored and updated.
+3. The data access layer takes care and provides logic to access data stored in persistent storage of some kind. For example an ODM like Mongoose, or ORM like TypeOrm
+
+The framework of choise is [NestJS](https://nestjs.com/) ([docs](https://docs.nestjs.com/)) due to its **modularity** and **powerset of awesome features**.
+
+The name is missleading, **typescript** will be used instead of plain **javascript**.
+
+<div class="page" />
+
+**Key features:**
+
+* `ORM` via [TypeOrm](https://typeorm.io/)
+* `Permissions` via [Casl](https://casl.js.org/v5/en/guide/intro)
+* `JWT` and `local` auth strategies
+
+### Non-functional requirements
+
+#### Security
+
+User credentials will be encrypted, and tokens will be signed with a `SECRET`.
+
+The **JWT** token will encapsulate *non sensitive user data* and **permissions** which will later be used to reject **unauthorized requests**.
+
+#### Scalability
+
+This is a `non-problem` due to the way **NestJS** is build. Being modular allows for easy and flexible **scalability**.
+
+#### Responsive design
+
+A mobile-friendly responsive design is a must!
+
+The frontend will be built using [Vue3](https://vuejs.org/) using its powerfull [CompositionAPI](https://vuejs.org/guide/extras/composition-api-faq.html). The styling library of choice will be [TailwindCSS](https://tailwindcss.com/) or other solutions based on tailwind such as [WindiCSS](https://windicss.org/).
+
+This will allow for a **quick** and **beautiful design**, built in a **mobile first breakpoint system**.
+
+#### Performance and perceived quickness
+
+Webpages will be served quickly, packed as minimal as possible, and all requests will be asyncronous, so the user can enjoy a fast and smooth experience.
+
+### Design constraints
+
+* Technical constraints will require the database `seeding` and `migrating` features, such that the database is kept up to date and be populated with initial data before the **application onboarding**.
+* A hash function is needed to encrypt user credentials.
+* A UI library needs to be built before starting to implement the application design.
+
+<div class="page" />
+
+## Database
+
+```mermaid
+erDiagram
+    Users ||--|{ Roles : has
+    Users ||--|| Profile: has
+    Users {
+      string username
+      string password
+    }
+    Roles {
+      string name
+    }
+    Profile {
+      string name
+      string email
+      string phone
+      string cnp
+      date birth
+    }
+    Users ||--|{ Enrolment : can_have
+    Enrolment {
+      int faculty_id
+      int user_id
+    }
+    Enrolment }|--o{ Faculty : part_of
+    University ||--|{ Faculty : contains
+    University {
+      string name
+    }
+    Faculty ||--|{ Courses : contains
+    Faculty {
+      string name
+    }
+    Courses ||--|{ Tasks : contains
+    Courses {
+      string name
+      string description
+    }
+    Roles ||--|{ Tasks : for
+    Tasks {
+      role target
+      string name
+      date start
+      date end
+    }
+```
+
+<div class="page" />
