@@ -1,0 +1,21 @@
+flowchart LR
+  actor((Admin))
+  is_registered{registered?}
+  actor-- invite user --o is_registered
+  actor-- add role --o is_registered
+  actor-- invite faculty --o is_registered
+  actor-- add task --o is_registered
+
+  has_roles{Has roles?}
+  set_roles[Set roles]
+  is_registered -->|Yes| has_roles
+  has_roles -->|No| set_roles
+  has_roles -->|Yes| invite_faculty
+  send_invitation[Send invitation]
+  is_registered -->|No| send_invitation
+  send_invitation --> set_roles
+
+  invite_faculty[Invite to Faculty]
+  add_tasks[Add tasks]
+  set_roles --> invite_faculty
+  invite_faculty --> add_tasks

@@ -1,0 +1,19 @@
+flowchart LR
+  actor((User))
+  is_registered{registered?}
+  actor-- calendar --o is_registered
+  actor-- view task --o is_registered
+  actor-- invite user --o is_registered
+  actor-- set roles --o is_registered
+
+  has_permission{permission?}
+  invite_user[Invite users]
+  set_roles[Set roles]
+  is_registered -->|Yes| has_permission
+  has_permission --> |Yes| invite_user
+  has_permission --> |Yes| add_task
+  invite_user -.-> set_roles
+  view_task[View task]
+  calendar[Calendar]
+  has_permission --> |No| calendar
+  calendar -.-> view_task

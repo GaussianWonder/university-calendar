@@ -12,15 +12,13 @@ classDiagram
 
   Person <|-- FacultyPerson
   FacultyPerson <|-- Student
-  FacultyPerson <|-- Teacher
   FacultyPerson <|-- Staff
+  Staff <|-- Teacher
 
   Student ..|> ContainsWork
-  Teacher ..|> ContainsWork
   Staff ..|> ContainsWork
 
   Student ..|> Work
-  Teacher ..|> Work
   Staff ..|> Work
 
 
@@ -50,8 +48,11 @@ classDiagram
     +todoMonth() List~Task~
   }
   class Teacher {
+    +inviteStudent(Student)
+    +inviteStaff(Course)
   }
   class Staff {
+    +addTask(User)
   }
   class Student {
   }

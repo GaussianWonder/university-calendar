@@ -24,7 +24,17 @@
       - [Responsive design](#responsive-design)
       - [Performance and perceived quickness](#performance-and-perceived-quickness)
     - [Design constraints](#design-constraints)
-  - [Database](#database)
+    - [Database](#database)
+    - [Sequence diagrams](#sequence-diagrams)
+      - [User roles](#user-roles)
+      - [User permission](#user-permission)
+      - [Faculty & Course creation](#faculty--course-creation)
+      - [Task creation](#task-creation)
+      - [Calendar page](#calendar-page)
+    - [Activity diagram](#activity-diagram)
+      - [User roles and creation](#user-roles-and-creation)
+      - [Package diagram](#package-diagram)
+      - [Class diagram](#class-diagram)
 
 <div class="page" />
 
@@ -208,7 +218,7 @@ Webpages will be served quickly, packed as minimal as possible, and all requests
 
 <div class="page" />
 
-## Database
+### Database
 
 ```mermaid
 erDiagram
@@ -257,3 +267,280 @@ erDiagram
 ```
 
 <div class="page" />
+
+### Sequence diagrams
+
+The sequence diagrams exemplify the sequence of events to consider in a normal workflow for several use cases.
+
+#### User roles
+
+This usecase covers **invitations** to the platform as well. Once an actor is invited, it also receives a platform invitation followed by a **mandatory profile onboarding**.
+
+```mermaid
+sequenceDiagram
+  actor Student
+  actor Teacher
+  actor Admin
+
+  Admin ->> Teacher: Invite to faculty
+  Note right of Teacher: Accept invitation
+
+  Admin ->> Teacher: Assign courses
+
+  Teacher ->> Student: Invite to class
+
+  Student ->> Teacher: Accept invitation
+
+  Note over Student: ~ Profile Onboarding
+```
+
+From now on, users can use the platform independently of each other.
+
+<div class="page" />
+
+#### User permission
+
+Some **teachers** can have *different permissions* on the platform. For example, a teacher can be an **administrator** given the right permissions.
+
+The same goes for **Staff members**.
+
+```mermaid
+sequenceDiagram
+  actor Staff
+  actor Teacher
+  actor Admin
+
+  Staff ->> Teacher: Request a permission privilage
+  Teacher -->> Staff: Sorry, I don't have the privilege
+
+  Teacher ->> Admin: Request a permission privilage
+  Admin ->> Teacher: Validate permission request
+
+  Staff ->> Teacher: Request a permission privilage
+  Teacher ->> Staff: Validate permission request
+```
+
+Each actor can independently assign permissions to other actors if they have the required priviledges.
+
+<div class="page" />
+
+#### Faculty & Course creation
+
+This usecase covers the **admin** creating a **faculty** for a university and assigning **courses** to it. Currently, courses **are not independent** of faculties, since we don't cover the case in which a teacher has activity across *multiple universities*. Each course is unique to a faculty.
+
+```mermaid
+sequenceDiagram
+  participant Course
+  participant Faculty
+  actor Admin
+
+  Admin ->> Faculty: Create
+  Admin ->> Faculty: Visit dedicated page
+  Admin ->> Course: Create
+  Note over Course, Faculty: Course is linked to Faculty
+```
+
+<div class="page" />
+
+#### Task creation
+
+Since permissions exist, the administrator **is not the only one** capable of creating and assigning tasks. Because of this, a different actor name will be used to describe the user which is able to create tasks.
+
+```mermaid
+sequenceDiagram
+  participant Task
+  participant Course
+  actor Scheduler
+
+  Scheduler ->> Course: Assert creation
+  Note over Scheduler, Course: The course is created
+  Scheduler ->> Course: Visit dedicated page
+  Scheduler ->> Task: Assert availability
+  Note over Task, Course: The task fits in the timeframe
+  Scheduler ->> Task: Create
+```
+
+<div class="page" />
+
+#### Calendar page
+
+Viewing the calendar and inspecting individual elements is trivial.
+
+```mermaid
+sequenceDiagram
+  participant Calendar
+  actor User
+
+  User ->> Calendar: Visit dedicated page
+  User ->> Calendar: Inspect monthly overview
+  User ->> Calendar: Inspect weekly overview
+  User ->> Calendar: Click date
+  User ->> Calendar: Inspect detailed tasks
+```
+
+### Activity diagram
+
+This diagram further illustrated the logic behind several usecases and sequence diagrams.
+
+#### User roles and creation
+
+```mermaid
+flowchart LR
+  actor((Admin))
+  is_registered{registered?}
+  actor-- invite user --o is_registered
+  actor-- add role --o is_registered
+  actor-- invite faculty --o is_registered
+  actor-- add task --o is_registered
+
+  has_roles{Has roles?}
+  set_roles[Set roles]
+  is_registered -->|Yes| has_roles
+  has_roles -->|No| set_roles
+  has_roles -->|Yes| invite_faculty
+  send_invitation[Send invitation]
+  is_registered -->|No| send_invitation
+  send_invitation --> set_roles
+
+  invite_faculty[Invite to Faculty]
+  add_tasks[Add tasks]
+  set_roles --> invite_faculty
+  invite_faculty --> add_tasks
+```
+
+```mermaid
+flowchart LR
+  actor((User))
+  is_registered{registered?}
+  actor-- calendar --o is_registered
+  actor-- view task --o is_registered
+  actor-- invite user --o is_registered
+  actor-- set roles --o is_registered
+
+  has_permission{permission?}
+  invite_user[Invite users]
+  set_roles[Set roles]
+  is_registered -->|Yes| has_permission
+  has_permission --> |Yes| invite_user
+  has_permission --> |Yes| add_task
+  invite_user -.-> set_roles
+  view_task[View task]
+  calendar[Calendar]
+  has_permission --> |No| calendar
+  calendar -.-> view_task
+```
+
+#### Package diagram
+
+```mermaid
+classDiagram
+
+  Model .. UI
+  Model .. Service
+  Service -- Controller
+  Service -- Repository
+
+  Validation .. Model
+  Validation --|> Service
+
+  EmailService --|> Service
+  RolesAndPermissions --|> Service
+  AuthService --|> Service
+  RolesAndPermissions .. AuthService
+
+
+  UI -- Controller
+```
+
+#### Class diagram
+
+```mermaid
+classDiagram
+  Enrollment --* "many" FacultyPerson : Contains
+  Faculty --* Enrollment
+  Faculty --* "many" University : Contains
+  Course --* "many" Faculty : Has
+  Task --* "many" Course : Has
+  DateRange --* Task
+
+  Faculty ..|> ContainsWork
+  Course ..|> ContainsWork
+  Faculty ..|> ContainsWork
+
+  Person <|-- FacultyPerson
+  FacultyPerson <|-- Student
+  FacultyPerson <|-- Staff
+  Staff <|-- Teacher
+
+  Student ..|> ContainsWork
+  Staff ..|> ContainsWork
+
+  Student ..|> Work
+  Staff ..|> Work
+
+
+  class Person {
+    <<abstract>>
+    -String name
+    -String email
+    -Date birthDate
+    -String phoneNumber
+    -String cnp
+  }
+  class FacultyPerson {
+    -List~Enrollment~ enrollments
+  }
+  class Work {
+    <<interface>>
+    +work()
+    +complete(Task) boolean
+    +isCompleted(Task) boolean
+  }
+  class ContainsWork {
+    <<interface>>
+    +hasWorkNow() boolean
+    +todoNow() Task
+    +todoToday() List~Task~
+    +todoWeek() List~Task~
+    +todoMonth() List~Task~
+  }
+  class Teacher {
+    +inviteStudent(Student)
+    +inviteStaff(Course)
+  }
+  class Staff {
+    +addTask(User)
+  }
+  class Student {
+  }
+
+  class Enrollment {
+    -String ID
+    -Faculty faculty
+  }
+  class University {
+    -String name
+    -List~Faculty~ faculties
+  }
+  class Faculty {
+    -List~Course~ courses
+    -String name
+    -String description
+  }
+  class Course {
+    -String name
+    -String description
+    -Set~Date, Task~ tasks
+  }
+  class Task {
+    -DateRange range
+    -String name
+    -String description
+    +onDate() Date
+  }
+  class DateRange {
+    -Date start
+    -Date end
+    +onDate() Date
+  }
+```
