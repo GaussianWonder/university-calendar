@@ -10,7 +10,6 @@
 
 ## Contents
 
-
 - [Univeristy Scheduler](#univeristy-scheduler)
   - [Contents](#contents)
   - [Project specification](#project-specification)
