@@ -11,9 +11,7 @@ export default defineConfig({
   },
   plugins: [
     solidPlugin(),
-    UnocssPlugin({
-      // your config or in uno.config.ts
-    }),
+    UnocssPlugin({ /* uno.config.ts */ }),
   ],
   build: {
     target: 'esnext',
