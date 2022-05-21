@@ -151,7 +151,7 @@ Viewing the calendar and inspecting tasks is the target of the application. This
 3. Student cries
 
 <div style="width: 100%; height: 490px; display:flex; flex-direction:row; align-items:center; justify-content: center;">
-<img src="diagrams/usecase/usecase.png" alt="usecase diagram" style="object-fit: cover;" />
+<img src="assets/diagrams/usecase/usecase.png" alt="usecase diagram" style="object-fit: cover;" />
 </div>
 
 <div class="page" />
@@ -167,7 +167,7 @@ As a consequence, the users of the application are **students**, whose presence 
 The Design principle for this web app's backend is a `3 Layer Architecture`.
 
 <div style="width: 100%; height: 490px; display:flex; flex-direction:row; align-items:center; justify-content: center;">
-<img src="./assets/layered_arch.png" style="object-fit: cover;" />
+<img src="./assets/diagrams/layered_arch.png" style="object-fit: cover;" />
 </div>
 
 1. A controller’s sole purpose is to receive requests for the application and deal with routes.
