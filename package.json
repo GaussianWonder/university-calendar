@@ -5,7 +5,7 @@
   "scripts": {
     "build": "concurrently \"cd fronted && npm run build\"",
     "start": "concurrently \"cd fronted && npm run serve\"",
-    "start:dev": "concurrently \"cd frontend && npm run dev\""
+    "start:dev": "concurrently \"cd backend && npm run start:dev\" \"cd frontend && npm run start:dev\""
   },
   "repository": {
     "type": "git",
