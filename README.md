@@ -6,6 +6,10 @@
 
 ## Contents
 
+**[Frontend](./frontend/README.md) documentation is [here](./frontend/README.md).**
+
+**[Backend](./backend/README.md) documentation is [here](./backend/README.md)**
+
 - [Univeristy Scheduler](#univeristy-scheduler)
   - [Contents](#contents)
   - [Project specification](#project-specification)
