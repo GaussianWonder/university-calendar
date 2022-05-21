@@ -1,0 +1,23 @@
+{
+  "name": "university-calendar",
+  "version": "0.0.1",
+  "description": "University calendar",
+  "scripts": {
+    "build": "concurrently \"cd fronted && npm run build\"",
+    "start": "concurrently \"cd fronted && npm run serve\"",
+    "start:dev": "concurrently \"cd frontend && npm run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GaussianWonder/university-calendar.git"
+  },
+  "author": "GaussianWonder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GaussianWonder/university-calendar/issues"
+  },
+  "homepage": "https://github.com/GaussianWonder/university-calendar#readme",
+  "devDependencies": {
+    "concurrently": "^7.2.0"
+  }
+}

@@ -182,9 +182,9 @@ The name is missleading, **typescript** will be used instead of plain **javascri
 
 **Key features:**
 
-* `ORM` via [TypeOrm](https://typeorm.io/)
-* `Permissions` via [Casl](https://casl.js.org/v5/en/guide/intro)
-* `JWT` and `local` auth strategies
+- `ORM` via [TypeOrm](https://typeorm.io/)
+- `Permissions` via [Casl](https://casl.js.org/v5/en/guide/intro)
+- `JWT` and `local` auth strategies
 
 ### Non-functional requirements
 
@@ -212,9 +212,9 @@ Webpages will be served quickly, packed as minimal as possible, and all requests
 
 ### Design constraints
 
-* Technical constraints will require the database `seeding` and `migrating` features, such that the database is kept up to date and be populated with initial data before the **application onboarding**.
-* A hash function is needed to encrypt user credentials.
-* A UI library needs to be built before starting to implement the application design.
+- Technical constraints will require the database `seeding` and `migrating` features, such that the database is kept up to date and be populated with initial data before the **application onboarding**.
+- A hash function is needed to encrypt user credentials.
+- A UI library needs to be built before starting to implement the application design.
 
 <div class="page" />
 
