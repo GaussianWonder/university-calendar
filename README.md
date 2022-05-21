@@ -202,7 +202,7 @@ This is a `non-problem` due to the way **NestJS** is build. Being modular allows
 
 A mobile-friendly responsive design is a must!
 
-The frontend will be built using [Vue3](https://vuejs.org/) using its powerfull [CompositionAPI](https://vuejs.org/guide/extras/composition-api-faq.html). The styling library of choice will be [TailwindCSS](https://tailwindcss.com/) or other solutions based on tailwind such as [WindiCSS](https://windicss.org/).
+The frontend will be built using [SolidJS](https://www.solidjs.com/). The CSS frameworks of choice are [TailwindCSS](https://tailwindcss.com/) and [Unocss](https://github.com/unocss/unocss). Only one css engine will be used after one is picked to be used.
 
 This will allow for a **quick** and **beautiful design**, built in a **mobile first breakpoint system**.
 
