@@ -4,11 +4,12 @@
 | ------- | ------------------ |
 | Group   | 30431              |
 
-## Contents
-
 **[Frontend](./frontend/README.md) documentation is [here](./frontend/README.md).**
 
 **[Backend](./backend/README.md) documentation is [here](./backend/README.md)**
+
+## Contents
+
 
 - [Univeristy Scheduler](#univeristy-scheduler)
   - [Contents](#contents)
