@@ -34,3 +34,20 @@ Your app is ready to be deployed!
 ## Deployment
 
 You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+
+## Utility script
+
+Generate **SolidJs** components from a template.
+
+```bash
+pnpm make path/to/SomeElement{.tsx} [-c | --children | --with-children]
+```
+
+or
+
+```bash
+npm run make -- path/to/SomeElement{.tsx} [-c | --children | --with-children]
+```
+
+> `make.ts` is the script that generates the components.
+ 

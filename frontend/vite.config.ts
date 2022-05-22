@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import UnocssPlugin from '@unocss/vite';
+import eslint from 'vite-plugin-eslint';
 
 export default defineConfig({
   server: {
@@ -12,6 +13,7 @@ export default defineConfig({
   plugins: [
     solidPlugin(),
     UnocssPlugin({ /* uno.config.ts */ }),
+    eslint(),
   ],
   build: {
     target: 'esnext',
