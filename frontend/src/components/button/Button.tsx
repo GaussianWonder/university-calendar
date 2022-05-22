@@ -1,4 +1,4 @@
-import { Component, ParentProps, children as resolveChildren, JSX, mergeProps } from 'solid-js';
+import { Component, ParentProps, children as resolveChildren, JSX, mergeProps, splitProps } from 'solid-js';
 
 interface ButtonStyles {
   primary: string;
@@ -20,7 +20,11 @@ export interface ButtonProps {
   class?: string;
 }
 
-const Button: Component<ParentProps<ButtonProps>> = (props) => {
+export interface AllButtonPRops extends ButtonProps {
+  [key: keyof JSX.ButtonHTMLAttributes<HTMLButtonElement> | string]: unknown;
+}
+
+const Button: Component<ParentProps<AllButtonPRops>> = (props) => {
   const merged = mergeProps({
     type: 'button' as JSX.ButtonHTMLAttributes<HTMLButtonElement>['type'],
     children: <></>,
@@ -28,22 +32,25 @@ const Button: Component<ParentProps<ButtonProps>> = (props) => {
     class: '',
   }, props);
 
-  const children = resolveChildren(() => merged.children);
+  const [base, others] = splitProps(merged, ['type', 'style', 'class', 'children']);
 
-  const currentStyle = () => styles[merged.style];
+  const children = resolveChildren(() => base.children);
+
+  const currentStyle = () => styles[base.style];
 
   return (
     <button
-      type={merged.type}
+      type={base.type}
       p="x-4 y-2"
       font="medium"
       text="sm"
       ring="focus:2 focus:offset-2"
       class={`
-        inline-flex items-center rounded-md shadow-sm focus:outline-none
+        inline-flex items-center rounded-md shadow-sm focus:outline-none disabled:opacity-30 transition-opacity duration-100
         ${currentStyle()}
-        ${merged.class}
+        ${base.class}
       `}
+      {...others}
     >
       {children()}
     </button>

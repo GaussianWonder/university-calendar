@@ -32,8 +32,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   static fromCookie(param_name: string) {
     return (req: Request) => {
-      if (!req.cookies || !req.cookies[param_name]) return null;
-      return req.cookies[param_name];
+      if (!req.signedCookies || !req.signedCookies[param_name]) return null;
+      return req.signedCookies[param_name];
     };
   }
 

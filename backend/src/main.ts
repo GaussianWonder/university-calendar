@@ -1,7 +1,9 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
+import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ForbiddenErrorFilter } from './auth/forbidden-error.filter';
@@ -16,9 +18,13 @@ export function inProduction(callback: CallableFunction) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // Helmet setup
   app.use(helmet());
+
+  // Cookie parser setup
+  app.use(cookieParser(configService.get<string>('COOKIE_SECRET')));
 
   // Global Validation Pipe
   app.useGlobalPipes(

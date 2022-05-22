@@ -3,11 +3,7 @@ import SidebarNav from '../components/nav/SidebarNav';
 import PageHeading from '../layouts/PageHeading';
 import SidebarLayout from '../layouts/SidebarLayout';
 
-export interface RegisterPageProps {
-
-}
-
-const RegisterPage: Component<RegisterPageProps> = (props) => {
+const RegisterPage: Component = () => {
   return (
     <SidebarLayout sidebar={<SidebarNav />}>
       <PageHeading
