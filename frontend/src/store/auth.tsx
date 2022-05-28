@@ -9,6 +9,7 @@ export interface AuthResponse {
 export interface AuthUser {
   id: number;
   username: string;
+  role: string;
 }
 
 export interface AuthState extends AuthResponse {
@@ -19,6 +20,7 @@ const invalidToken: AuthResponse['access_token'] = '';
 const invalidUser: AuthUser = {
   id: -1,
   username: '',
+  role: '',
 };
 
 const initAuthState: AuthState = {

@@ -1,7 +1,6 @@
 import { Component, createEffect, createResource, createSignal, onCleanup, ResourceFetcher, Show } from "solid-js";
 import createDebounce from "../../../primitives/create-debouncer";
 import auth, { AuthResponse } from "../../../store/auth";
-import Button from "../../button/Button";
 import LeftRightStrip from "../../strip/LeftRightStrip";
 import Input from "../input/Input";
 
@@ -53,7 +52,7 @@ const LoginForm: Component = () => {
     password: password(),
   });
 
-  const [data, { refetch }] = createResource(loginSource, performLogin, {
+  const [data] = createResource(loginSource, performLogin, {
     deferStream: true,
   });
 
@@ -101,15 +100,6 @@ const LoginForm: Component = () => {
               <span text-red-500>Errors...</span>
             </Show>
           </>
-        }
-        right={
-          <Button
-            style="primary"
-            onClick={() => refetch()}
-            disabled={data.loading}
-          >
-            Login
-          </Button>
         }
       />
     </div>
