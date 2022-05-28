@@ -11,7 +11,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReqUser } from 'src/common/decorators/user.decorator';
 import { CreateUserDto } from 'src/models/user/dto/create-user.dto';
 import { LoginUserDto } from 'src/models/user/dto/login-user.dto';
-import { User } from 'src/models/user/entities/user.entity';
+import { User, UserRole } from 'src/models/user/entities/user.entity';
 import { CheckAbilities } from './ability/abilities.decorator';
 import { AbilitiesGuard } from './ability/abilities.guard';
 import { Action } from './ability/ability.factory';
@@ -42,7 +42,10 @@ export class AuthController {
     summary: 'Register a user.',
   })
   register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.registerUser(createUserDto);
+    return this.authService.registerUser({
+      ...createUserDto,
+      role: UserRole.Student,
+    });
   }
 
   @UseGuards(JwtAuthGuard, AbilitiesGuard)

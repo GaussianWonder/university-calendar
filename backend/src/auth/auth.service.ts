@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/models/user/entities/user.entity';
+import { UserRole, User } from 'src/models/user/entities/user.entity';
 import { UserService } from 'src/models/user/user.service';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 interface RegisterOptions {
   username: string;
   password: string;
-  roleId?: number;
+  role?: UserRole;
 }
 
 @Injectable()
@@ -51,6 +51,7 @@ export class AuthService {
     if (await bcrypt.compare(password, user.password)) {
       return user;
     }
+
     throw new UnauthorizedException();
   }
 }
