@@ -1,4 +1,4 @@
-import { Component, createEffect, createResource, createSignal, onCleanup, ResourceFetcher, Show } from "solid-js";
+import { Component, createEffect, createResource, createSignal, ResourceFetcher, Show } from "solid-js";
 import auth, { AuthResponse, AuthUser } from "../../../store/auth";
 import Button from "../../button/Button";
 import LeftRightStrip from "../../strip/LeftRightStrip";
