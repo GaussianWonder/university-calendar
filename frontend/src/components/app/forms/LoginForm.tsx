@@ -1,6 +1,6 @@
 import { Component, createEffect, createResource, createSignal, onCleanup, ResourceFetcher, Show } from "solid-js";
-import { AuthResponse, useAuth } from "../../../App";
 import createDebounce from "../../../primitives/create-debouncer";
+import auth, { AuthResponse } from "../../../store/auth";
 import Button from "../../button/Button";
 import LeftRightStrip from "../../strip/LeftRightStrip";
 import Input from "../input/Input";
@@ -13,9 +13,7 @@ type LoginFetcher = ResourceFetcher<LoginBody, AuthResponse>;
 
 export const performLogin: LoginFetcher = async (loginBody) => {
   if (!loginBody.username || !loginBody.password)
-    return {
-      access_token: null,
-    };
+    return { access_token: '' };
 
   const response = await fetch('http://localhost:3000/auth/login', {
       method: 'POST',
@@ -27,18 +25,14 @@ export const performLogin: LoginFetcher = async (loginBody) => {
         password: loginBody.password,
       }),
     });
-  
+
   if (!response.ok)
-    return {
-      access_token: null,
-    };
+    return { access_token: '' };
 
   const data: AuthResponse = await response.json();
 
   if (!data || !data.access_token)
-    return {
-      access_token: null,
-    };
+    return { access_token: '' };
 
   return data;
 };
@@ -52,7 +46,7 @@ type LoginBodySetEffect = (toSet: LoginBodySetParams) => void;
 const LoginForm: Component = () => {
   const [username, setUsername] = createSignal<string>("");
   const [password, setPassword] = createSignal<string>("");
-  const [, { setToken }] = useAuth();
+  const [, setToken] = auth;
 
   const loginSource = () => ({
     username: username(),
@@ -65,21 +59,20 @@ const LoginForm: Component = () => {
 
   const [triggerLogin, cleanLoginDebouncer] = createDebounce<LoginBodySetEffect>(
     (toSet) => {
-      if (toSet.username)
-        setUsername(toSet.username);
-      if (toSet.password)
-        setPassword(toSet.password);
+      const username = toSet.username;
+      const password = toSet.password;
+
+      if (username) setUsername(username);
+      if (password) setPassword(password);
     },
     500,
   );
 
   onCleanup(() => { cleanLoginDebouncer() });
 
-  const token = () => (data()?.access_token ?? null);
-
   createEffect(() => {
-    const currentToken = token();
-    if (currentToken) setToken(currentToken);
+    const authResponse = data();
+    if (authResponse && !!authResponse.access_token) setToken(authResponse.access_token);
   });
 
   return (
@@ -112,7 +105,7 @@ const LoginForm: Component = () => {
         right={
           <Button
             style="primary"
-            onClick={() => refetch(data)}
+            onClick={() => refetch()}
             disabled={data.loading}
           >
             Login

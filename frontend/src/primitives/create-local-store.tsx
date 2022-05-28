@@ -1,19 +1,20 @@
 import { createEffect } from "solid-js";
-import { createStore, DeepReadonly, SetStoreFunction, Store } from "solid-js/store";
+import { createStore, SetStoreFunction, Store } from "solid-js/store";
 
-type StorageConsumer<T> = (storage: Storage) => T | null;
-type StorageSetter<T> = (storage: Storage, value: T) => void;
+export default function createLocalStore<T extends object>(initState: T, localStorageKey = 'store'): [Store<T>, SetStoreFunction<T>] {
+	const [store, setStore] = createStore(initState);
 
-export default function createLocalStore<T>(initState: T, getFromStorage: StorageConsumer<T>, setToStorage: StorageSetter<DeepReadonly<T>>): [Store<T>, SetStoreFunction<T>] {
-	const [state, setState] = createStore(initState);
-
-  const data = getFromStorage(localStorage);
-  if (data)
-    setState(data);
+  if (localStorage[localStorageKey]) {
+    try {
+      setStore(JSON.parse(localStorage[localStorageKey]));
+    } catch (error) {
+      setStore(() => initState);
+    }
+  }
 
 	createEffect(() => {
-    setToStorage(localStorage, state);
+    localStorage[localStorageKey] = JSON.stringify(store);
   });
 
-	return [state, setState];
+  return [store, setStore];
 }
