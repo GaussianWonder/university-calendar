@@ -22,7 +22,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 @Controller('auth')
 @ApiTags('1. Authentication')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')

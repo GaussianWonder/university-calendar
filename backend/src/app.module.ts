@@ -7,6 +7,9 @@ import { AbilityModule } from './auth/ability/ability.module';
 import { AuthModule } from './auth/auth.module';
 import { ClassTransformOmitInterceptor } from './common/interceptors/class-transform-omit.interceptor';
 import { UserModule } from './models/user/user.module';
+import { CourseModule } from './models/course/course.module';
+import { FacultyModule } from './models/faculty/faculty.module';
+import { UniversityModule } from './models/university/university.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { UserModule } from './models/user/user.module';
     AuthModule,
     UserModule,
     AbilityModule,
+    CourseModule,
+    FacultyModule,
+    UniversityModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClassTransformOmitInterceptor.Provider],
