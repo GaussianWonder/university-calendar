@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import Delta from 'quill-delta';
+import { Repository, UpdateResult } from 'typeorm';
 import { CreateUniversityDto } from './dto/create-university.dto';
 import { UpdateUniversityDto } from './dto/update-university.dto';
+import { University } from './entities/university.entity';
 
 @Injectable()
 export class UniversityService {
-  create(createUniversityDto: CreateUniversityDto) {
-    return 'This action adds a new university';
+  constructor(
+    @InjectRepository(University)
+    private readonly universityRepository: Repository<University>,
+  ) {}
+
+  async create(createUniversityDto: CreateUniversityDto): Promise<University> {
+    try {
+      const description = new Delta(
+        JSON.parse(createUniversityDto.description),
+      );
+      return this.universityRepository.save(
+        this.universityRepository.create({
+          ...createUniversityDto,
+          description,
+        }),
+      );
+    } catch (e) {
+      console.error(e);
+      throw new BadRequestException('Invalid quill-delta content');
+    }
   }
 
-  findAll() {
-    return `This action returns all university`;
+  async findAll(): Promise<University[]> {
+    return this.universityRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} university`;
+  async findOne(id: number): Promise<University> {
+    return this.universityRepository.findOne({
+      where: { id },
+    });
   }
 
-  update(id: number, updateUniversityDto: UpdateUniversityDto) {
-    return `This action updates a #${id} university`;
+  async update(
+    id: number,
+    updateUniversityDto: UpdateUniversityDto,
+  ): Promise<University> {
+    const university = await this.findOne(id);
+
+    if (updateUniversityDto.description) {
+      try {
+        university.description = new Delta(
+          JSON.parse(updateUniversityDto.description),
+        );
+      } catch (e) {
+        console.error(e);
+        throw new BadRequestException('Invalid quill-delta content');
+      }
+    }
+
+    if (updateUniversityDto.name) {
+      university.name = updateUniversityDto.name;
+    }
+
+    return this.universityRepository.save(university);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} university`;
+  async remove(id: number): Promise<UpdateResult> {
+    return this.universityRepository.softDelete({ id });
   }
 }

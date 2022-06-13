@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRole, User } from 'src/models/user/entities/user.entity';
 import { UserService } from 'src/models/user/user.service';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 interface RegisterOptions {
   username: string;

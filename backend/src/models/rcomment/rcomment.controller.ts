@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { RcommentService } from './rcomment.service';
 import { CreateRcommentDto } from './dto/create-rcomment.dto';
 import { UpdateRcommentDto } from './dto/update-rcomment.dto';
@@ -23,7 +31,10 @@ export class RcommentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRcommentDto: UpdateRcommentDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateRcommentDto: UpdateRcommentDto,
+  ) {
     return this.rcommentService.update(+id, updateRcommentDto);
   }
 
