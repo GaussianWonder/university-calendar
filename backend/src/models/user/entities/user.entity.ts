@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { BaseEntity } from 'src/models/base.entity';
 
 export enum UserRole {
   Student = 'student',
@@ -9,15 +10,9 @@ export enum UserRole {
 }
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class User extends BaseEntity {
   @Column({ unique: true })
   username: string;
-
-  // @Column()
-  // email: string;
 
   @Column({ select: false })
   @Exclude({ toPlainOnly: true })
@@ -31,6 +26,7 @@ export class User {
   role: UserRole;
 
   constructor(partial: Partial<User>) {
+    super();
     Object.assign(this, partial);
   }
 }

@@ -10,6 +10,7 @@ import { UserModule } from './models/user/user.module';
 import { CourseModule } from './models/course/course.module';
 import { FacultyModule } from './models/faculty/faculty.module';
 import { UniversityModule } from './models/university/university.module';
+import { TaskModule } from './models/task/task.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { UniversityModule } from './models/university/university.module';
     CourseModule,
     FacultyModule,
     UniversityModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClassTransformOmitInterceptor.Provider],
