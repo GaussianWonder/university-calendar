@@ -11,6 +11,7 @@ import { CourseModule } from './models/course/course.module';
 import { FacultyModule } from './models/faculty/faculty.module';
 import { UniversityModule } from './models/university/university.module';
 import { TaskModule } from './models/task/task.module';
+import { RcommentModule } from './models/rcomment/rcomment.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TaskModule } from './models/task/task.module';
     FacultyModule,
     UniversityModule,
     TaskModule,
+    RcommentModule,
   ],
   controllers: [AppController],
   providers: [AppService, ClassTransformOmitInterceptor.Provider],

@@ -1,11 +1,13 @@
 import Delta from 'quill-delta';
 import { BaseEntity } from 'src/models/base.entity';
 import { Course } from 'src/models/course/entities/course.entity';
+import { Rcomment } from 'src/models/rcomment/entities/rcomment.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   RelationId,
 } from 'typeorm';
 
@@ -19,6 +21,9 @@ export class Task extends BaseEntity {
 
   @CreateDateColumn({ type: 'timestamp' })
   dueDate: Date;
+
+  @OneToMany(() => Rcomment, (rcomment) => rcomment.task)
+  rcomments: Rcomment[];
 
   @ManyToOne(() => Course, (c) => c.tasks, { nullable: true })
   course: Course;
