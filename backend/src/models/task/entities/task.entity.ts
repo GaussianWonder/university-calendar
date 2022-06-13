@@ -1,7 +1,13 @@
 import Delta from 'quill-delta';
 import { BaseEntity } from 'src/models/base.entity';
 import { Course } from 'src/models/course/entities/course.entity';
-import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  RelationId,
+} from 'typeorm';
 
 @Entity()
 export class Task extends BaseEntity {
@@ -10,6 +16,9 @@ export class Task extends BaseEntity {
 
   @Column({ type: 'json' })
   description: Delta;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  dueDate: Date;
 
   @ManyToOne(() => Course, (c) => c.tasks, { nullable: true })
   course: Course;
