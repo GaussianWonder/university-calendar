@@ -23,7 +23,7 @@ export class AbilitiesGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest();
 
-    const ability = this.caslAbilityFactory.defineAbility(user);
+    const ability = await this.caslAbilityFactory.defineAbility(user);
 
     try {
       rules.forEach((rule) =>
