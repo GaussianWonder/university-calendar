@@ -92,7 +92,7 @@ export class FacultyController {
     subject: Faculty,
   })
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete a university.' })
+  @ApiOperation({ summary: 'Delete a faculty.' })
   async remove(@Param('id') id: string) {
     const { affected } = await this.facultyService.remove(+id);
     return {

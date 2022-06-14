@@ -31,7 +31,7 @@ export class CreateFacultyDto {
       allowNaN: false,
       allowInfinity: false,
     },
-    { message: 'Invalid faculty id' },
+    { message: 'Invalid university id' },
   )
   @IsPositive({ message: 'University id must be positive' })
   @ApiProperty({
