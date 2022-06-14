@@ -23,7 +23,6 @@ export enum Action {
   Delete = 'delete',
 }
 
-// TODO add other subjects as needed
 type AppSubjects =
   | typeof User
   | typeof University
