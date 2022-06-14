@@ -80,7 +80,7 @@ export class CourseController {
     @Body() updateCourseDto: UpdateCourseDto,
   ) {
     const nId = Number(id);
-    if (!nId) throw new BadRequestException('Invalid faculty id');
+    if (!nId) throw new BadRequestException('Invalid course id');
 
     return await this.courseService.update(nId, updateCourseDto);
   }
