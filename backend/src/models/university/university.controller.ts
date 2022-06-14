@@ -50,6 +50,13 @@ export class UniversityController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard, AbilitiesGuard)
+  @CheckAbilities({
+    action: Action.Read,
+    subject: University,
+  })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get one university.' })
   async findOne(@Param('id') id: string) {
     const nId = Number(id);
     if (!nId) throw new BadRequestException('Invalid university id');
@@ -87,9 +94,9 @@ export class UniversityController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a university.' })
   async remove(@Param('id') id: string) {
-    const result = await this.universityService.remove(+id);
+    const { affected } = await this.universityService.remove(+id);
     return {
-      affected: result.affected,
+      affected,
     };
   }
 }
