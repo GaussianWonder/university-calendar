@@ -4,7 +4,6 @@ import { IsAlphanumeric, IsString, MinLength } from 'class-validator';
 export class CreateUserDto {
   @IsAlphanumeric()
   @MinLength(3)
-  // TODO @Unique([User])
   @ApiProperty({
     default: 'johndoe',
   })
