@@ -19,6 +19,8 @@ import { AbilitiesGuard } from 'src/auth/ability/abilities.guard';
 import { CheckAbilities } from 'src/auth/ability/abilities.decorator';
 import { Action } from 'src/auth/ability/ability.factory';
 import { Task } from './entities/task.entity';
+import { ReqUser } from 'src/common/decorators/user.decorator';
+import { User } from '../user/entities/user.entity';
 
 @Controller('task')
 @ApiTags('4. Task')
@@ -33,8 +35,8 @@ export class TaskController {
   })
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a task.' })
-  async create(@Body() createTaskDto: CreateTaskDto) {
-    return await this.taskService.create(createTaskDto);
+  async create(@Body() createTaskDto: CreateTaskDto, @ReqUser() user: User) {
+    return await this.taskService.create(createTaskDto, user);
   }
 
   @Get()

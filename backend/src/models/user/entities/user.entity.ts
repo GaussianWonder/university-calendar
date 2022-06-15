@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/models/base.entity';
 import { Rcomment } from 'src/models/rcomment/entities/rcomment.entity';
+import { Task } from 'src/models/task/entities/task.entity';
 
 export enum UserRole {
   Student = 'student',
@@ -30,6 +31,11 @@ export class User extends BaseEntity {
     lazy: true,
   })
   rcomments: Rcomment[];
+
+  @OneToMany(() => Task, (task) => task.user, {
+    lazy: true,
+  })
+  tasks: Task[];
 
   constructor(partial: Partial<User>) {
     super();

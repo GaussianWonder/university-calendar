@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Delta from 'quill-delta';
 import { Repository, UpdateResult } from 'typeorm';
+import { User } from '../user/entities/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
@@ -13,13 +14,14 @@ export class TaskService {
     private readonly taskRepository: Repository<Task>,
   ) {}
 
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+  async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     try {
       const description = new Delta(JSON.parse(createTaskDto.description));
       return this.taskRepository.save(
         this.taskRepository.create({
           ...createTaskDto,
           description,
+          userId: user.id,
         }),
       );
     } catch (e) {

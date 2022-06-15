@@ -18,7 +18,7 @@ export class Faculty extends BaseEntity {
   @ManyToOne(() => University, (university) => university.faculties)
   university: University;
 
-  @Column({ nullable: true })
+  @Column()
   @RelationId((faculty: Faculty) => faculty.university)
   universityId: number;
 

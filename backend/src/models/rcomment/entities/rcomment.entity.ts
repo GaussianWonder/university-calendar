@@ -9,7 +9,7 @@ export class Rcomment extends BaseEntity {
   @Column({ type: 'json' })
   content: Delta;
 
-  @ManyToOne(() => User, (user) => user.rcomments)
+  @ManyToOne(() => User, (user) => user.rcomments, { eager: true })
   user: User;
 
   @Column()

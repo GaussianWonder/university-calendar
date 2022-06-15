@@ -2,6 +2,7 @@ import Delta from 'quill-delta';
 import { BaseEntity } from 'src/models/base.entity';
 import { Course } from 'src/models/course/entities/course.entity';
 import { Rcomment } from 'src/models/rcomment/entities/rcomment.entity';
+import { User } from 'src/models/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -25,12 +26,19 @@ export class Task extends BaseEntity {
   @OneToMany(() => Rcomment, (rcomment) => rcomment.task)
   rcomments: Rcomment[];
 
-  @ManyToOne(() => Course, (c) => c.tasks, { nullable: true })
+  @ManyToOne(() => Course, (c) => c.tasks)
   course: Course;
 
-  @Column({ nullable: true })
+  @Column()
   @RelationId((task: Task) => task.course)
   courseId: number;
+
+  @ManyToOne(() => User, (u) => u.tasks)
+  user: User;
+
+  @Column()
+  @RelationId((task: Task) => task.user)
+  userId: number;
 
   constructor(partial: Partial<Task>) {
     super();
