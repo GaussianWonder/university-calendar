@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
   Role,
@@ -39,6 +39,25 @@ export class UserService {
       ...createDto,
     });
     return this.userRepository.save(user);
+  }
+
+  async findAll(options?: FindManyOptions<User>): Promise<User[]> {
+    return this.userRepository.find(options);
+  }
+
+  async findSimilarUsernames(
+    usernameAlike: string,
+    limit = 50,
+  ): Promise<User[]> {
+    return this.findAll({
+      where: {
+        username: Like(`%${usernameAlike}%`),
+      },
+      order: {
+        username: 'ASC',
+      },
+      take: limit,
+    });
   }
 
   async findOne(opts: FindOneUserOptions) {
