@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import {
+  Role,
+  RoleCategory,
+  RoleSubjectId,
+  RoleTitle,
+} from './entities/role.entity';
 import { User } from './entities/user.entity';
 
 interface FindByUsername {
@@ -15,10 +21,17 @@ interface FindById {
 type FindOneUser = FindByUsername | FindById;
 type FindOneUserOptions = FindOneUser & { relations?: string[] };
 
+export interface RoleOpts {
+  category: RoleCategory;
+  title: RoleTitle;
+  subject: RoleSubjectId;
+}
+
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
   ) {}
 
   async create(createDto: CreateUserDto) {
@@ -37,5 +50,15 @@ export class UserService {
       where: { [findType]: findBy },
       relations,
     });
+  }
+
+  async assignRole(user: User, roleOpts: RoleOpts): Promise<Role> {
+    const role = this.roleRepository.create({
+      userId: user.id,
+      category: roleOpts.category,
+      title: roleOpts.title,
+      ...roleOpts.subject,
+    });
+    return this.roleRepository.save(role);
   }
 }

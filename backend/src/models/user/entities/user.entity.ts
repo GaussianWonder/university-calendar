@@ -3,6 +3,13 @@ import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/models/base.entity';
 import { Rcomment } from 'src/models/rcomment/entities/rcomment.entity';
 import { Task } from 'src/models/task/entities/task.entity';
+import {
+  CourseRole,
+  FacultyRole,
+  Role,
+  TaskRole,
+  UniversityRole,
+} from './role.entity';
 
 export enum UserRole {
   Student = 'student',
@@ -25,6 +32,7 @@ export class User extends BaseEntity {
     enum: UserRole,
     default: UserRole.Student,
   })
+  // Account role
   role: UserRole;
 
   @OneToMany(() => Rcomment, (comment) => comment.user, {
@@ -36,6 +44,22 @@ export class User extends BaseEntity {
     lazy: true,
   })
   tasks: Task[];
+
+  // Resource roles
+  @OneToMany(() => Role, (role) => role.user)
+  roles: Role;
+
+  @OneToMany(() => UniversityRole, (role) => role.user)
+  universityRoles: UniversityRole[];
+
+  @OneToMany(() => FacultyRole, (role) => role.user)
+  facultyRoles: FacultyRole[];
+
+  @OneToMany(() => CourseRole, (role) => role.user)
+  courseRoles: CourseRole[];
+
+  @OneToMany(() => TaskRole, (role) => role.user)
+  taskRoles: TaskRole[];
 
   constructor(partial: Partial<User>) {
     super();
