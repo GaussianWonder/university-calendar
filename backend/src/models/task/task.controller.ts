@@ -21,11 +21,18 @@ import { Action } from 'src/auth/ability/ability.factory';
 import { Task } from './entities/task.entity';
 import { ReqUser } from 'src/common/decorators/user.decorator';
 import { User } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service';
+import { RoleCategory, RoleTitle } from '../user/entities/role.entity';
+import { CourseService } from '../course/course.service';
 
 @Controller('task')
 @ApiTags('4. Task')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly courseService: CourseService,
+    private readonly taskService: TaskService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, AbilitiesGuard)
@@ -36,50 +43,67 @@ export class TaskController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a task.' })
   async create(@Body() createTaskDto: CreateTaskDto, @ReqUser() user: User) {
-    return await this.taskService.create(createTaskDto, user);
+    this.userService.forbiddenUnlessCan(
+      user,
+      Action.Read,
+      await this.courseService.findOne(createTaskDto.courseId),
+    );
+    const task = await this.taskService.create(createTaskDto, user);
+    await this.userService.assignRole(user, {
+      category: RoleCategory.Task,
+      title: RoleTitle.Moderator,
+      subject: { taskId: task.id },
+    });
+
+    return task;
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard, AbilitiesGuard)
-  @CheckAbilities({
-    action: Action.Read,
-    subject: Task,
-  })
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all tasks.' })
-  async findAll() {
-    return await this.taskService.findAll();
+  async findAll(@ReqUser() user: User) {
+    const [tasks, abilityFilter] = await Promise.all([
+      this.taskService.findAll(),
+      this.userService.canUserFilter(user, Action.Read),
+    ]);
+
+    return tasks.filter(abilityFilter);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, AbilitiesGuard)
-  @CheckAbilities({
-    action: Action.Read,
-    subject: Task,
-  })
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a task.' })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @ReqUser() user: User) {
     const nId = Number(id);
     if (!nId) throw new BadRequestException('Invalid task id');
 
     const task = await this.taskService.findOne(nId);
     if (!task) throw new NotFoundException('Task not found');
 
+    await this.userService.forbiddenUnlessCan(user, Action.Read, task);
+
     return task;
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, AbilitiesGuard)
-  @CheckAbilities({
-    action: Action.Update,
-    subject: Task,
-  })
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a task.' })
-  async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+    @ReqUser() user: User,
+  ) {
     const nId = Number(id);
     if (!nId) throw new BadRequestException('Invalid task id');
+
+    await this.userService.forbiddenUnlessCan(
+      user,
+      Action.Update,
+      await this.taskService.findOne(nId),
+    );
 
     return await this.taskService.update(nId, updateTaskDto);
   }

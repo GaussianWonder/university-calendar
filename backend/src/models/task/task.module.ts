@@ -3,12 +3,13 @@ import { TaskService } from './task.service';
 import { TaskController } from './task.controller';
 import { Task } from './entities/task.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Course } from '../course/entities/course.entity';
-import { Rcomment } from '../rcomment/entities/rcomment.entity';
+import { UserModule } from '../user/user.module';
+import { CourseModule } from '../course/course.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task, Course, Rcomment])],
+  imports: [TypeOrmModule.forFeature([Task]), UserModule, CourseModule],
   controllers: [TaskController],
   providers: [TaskService],
+  exports: [TaskService],
 })
 export class TaskModule {}

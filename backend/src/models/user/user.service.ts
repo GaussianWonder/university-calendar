@@ -1,5 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenError } from '@casl/ability';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  AbilityFactory,
+  Action,
+  AppAbility,
+  Subjects,
+} from 'src/auth/ability/ability.factory';
 import { FindManyOptions, Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
@@ -32,7 +39,37 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    private readonly abilityFactory: AbilityFactory,
   ) {}
+
+  async abilityOf(user: User): Promise<AppAbility> {
+    return this.abilityFactory.defineAbility(user);
+  }
+
+  async canUserDo(
+    user: User,
+    action: Action,
+    subject: Subjects,
+    field?: string,
+  ) {
+    const ability = await this.abilityOf(user);
+    return ability.can(action, subject, field);
+  }
+
+  async canUserFilter(user: User, action: Action, field?: string) {
+    const ability = await this.abilityOf(user);
+    return (subject: Subjects) => ability.can(action, subject, field);
+  }
+
+  async forbiddenUnlessCan(
+    user: User,
+    action: Action,
+    subject: Subjects,
+    field?: string,
+  ) {
+    const ability = await this.abilityOf(user);
+    ForbiddenError.from(ability).throwUnlessCan(action, subject, field);
+  }
 
   async create(createDto: CreateUserDto) {
     const user = this.userRepository.create({
@@ -72,6 +109,9 @@ export class UserService {
   }
 
   async assignRole(user: User, roleOpts: RoleOpts): Promise<Role> {
+    if (Object.keys(roleOpts.subject).length !== 1)
+      throw new BadRequestException('Subject must be a single unique key');
+
     const role = this.roleRepository.create({
       userId: user.id,
       category: roleOpts.category,

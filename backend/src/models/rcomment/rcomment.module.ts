@@ -10,5 +10,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([Rcomment, User, Task])],
   controllers: [RcommentController],
   providers: [RcommentService],
+  exports: [RcommentService],
 })
 export class RcommentModule {}

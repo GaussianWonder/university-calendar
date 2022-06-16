@@ -15,7 +15,9 @@ export class Course extends BaseEntity {
   @OneToMany(() => Task, (task) => task.course)
   tasks: Task[];
 
-  @ManyToOne(() => Faculty, (faculty) => faculty.courses)
+  @ManyToOne(() => Faculty, (faculty) => faculty.courses, {
+    eager: true,
+  })
   faculty: Faculty;
 
   @Column({ nullable: true })

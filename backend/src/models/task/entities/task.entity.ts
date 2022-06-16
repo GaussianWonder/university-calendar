@@ -26,14 +26,18 @@ export class Task extends BaseEntity {
   @OneToMany(() => Rcomment, (rcomment) => rcomment.task)
   rcomments: Rcomment[];
 
-  @ManyToOne(() => Course, (c) => c.tasks)
+  @ManyToOne(() => Course, (c) => c.tasks, {
+    eager: true,
+  })
   course: Course;
 
   @Column()
   @RelationId((task: Task) => task.course)
   courseId: number;
 
-  @ManyToOne(() => User, (u) => u.tasks)
+  @ManyToOne(() => User, (u) => u.tasks, {
+    eager: true,
+  })
   user: User;
 
   @Column()

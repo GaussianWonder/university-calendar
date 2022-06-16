@@ -11,6 +11,7 @@ import {
   TaskRole,
   UniversityRole,
 } from './entities/role.entity';
+import { AbilityModule } from 'src/auth/ability/ability.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import {
       CourseRole,
       TaskRole,
     ]),
+    AbilityModule,
   ],
   controllers: [UserController],
   providers: [UserService],
