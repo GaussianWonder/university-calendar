@@ -4,6 +4,8 @@ export interface InputProps {
   type?: JSX.InputHTMLAttributes<HTMLInputElement>['type'];
   name?: string;
   label?: string;
+  class?: string;
+  inputPadding?: string;
 }
 
 export interface AllInputProps extends InputProps {
@@ -13,12 +15,14 @@ export interface AllInputProps extends InputProps {
 const Input: Component<AllInputProps> = (props) => {
   const merged = mergeProps({
     type: 'text' as JSX.InputHTMLAttributes<HTMLInputElement>['type'],
+    class: 'mb-4',
+    inputPadding: '',
   }, props);
 
-  const [base, others] = splitProps(merged, ['type', 'name', 'label']);
+  const [base, others] = splitProps(merged, ['type', 'name', 'label', 'class', 'inputPadding']);
 
   return (
-    <div mb-4>
+    <div class={base.class}>
       <Show when={!!base.label && !!base.name}>
         <label
           class="block text-gray-800 text-sm font-medium mb-2"
@@ -30,7 +34,7 @@ const Input: Component<AllInputProps> = (props) => {
       <input
         type={base.type}
         name={base.name}
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900"
+        class={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${base.inputPadding}`}
         {...others}
       />
     </div>

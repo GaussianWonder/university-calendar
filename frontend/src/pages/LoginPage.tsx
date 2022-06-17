@@ -1,4 +1,4 @@
-import { Component, createEffect, Show } from 'solid-js';
+import { Component, Show } from 'solid-js';
 import LoginForm from '../components/app/forms/LoginForm';
 import InformativeLabel from '../components/app/label/InformativeLabel';
 import Button from '../components/button/Button';
@@ -9,10 +9,6 @@ import auth from '../store/auth';
 
 const LoginPage: Component = () => {
   const [authState, logout] = auth;
-
-  createEffect(() => {
-    console.log(authState());
-  });
 
   const isLoggedIn = () => {
     return !!authState().access_token;

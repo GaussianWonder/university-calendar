@@ -1,12 +1,24 @@
 import { Link } from 'solid-app-router';
 import { Component, ParentProps, children as resolveChildren, JSXElement, createSignal, Show } from 'solid-js';
 import AppLogo from '../components/app/AppLogo';
+import auth from '../store/auth';
 
 export interface SidebarLayoutProps {
   sidebar: JSXElement;
 }
 
 const SidebarLayout: Component<ParentProps<SidebarLayoutProps>> = (props) => {
+  const [authState] = auth;
+
+  const headerTitle = () => {
+    const state = authState();
+    if (state.user && state.user.username) {
+      return state.user.username;
+    } else {
+      return 'UCAPP';
+    }
+  };
+
   const children = resolveChildren(() => props.children);
   const sidebarChildren = resolveChildren(() => props.sidebar);
 
@@ -26,7 +38,7 @@ const SidebarLayout: Component<ParentProps<SidebarLayoutProps>> = (props) => {
           >
             <AppLogo class='w-10 h-10 text-indigo-600 group-hover:text-indigo-500 transition-colors' />
             <span font="medium sans" text="white 2xl">
-              UCAPP
+              { headerTitle() }
             </span>
           </div>
         </Link>

@@ -1,6 +1,7 @@
 import { Accessor, createEffect, createResource, createRoot, ResourceFetcher } from "solid-js";
 import { DeepReadonly } from "solid-js/store";
 import createLocalStore from "../primitives/create-local-store";
+import { UserRole } from "../types/models/user";
 
 export interface AuthResponse {
   access_token: string;
@@ -9,7 +10,7 @@ export interface AuthResponse {
 export interface AuthUser {
   id: number;
   username: string;
-  role: string;
+  role: UserRole;
 }
 
 export interface AuthState extends AuthResponse {

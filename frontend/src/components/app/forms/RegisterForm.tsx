@@ -1,3 +1,4 @@
+import { useNavigate } from "solid-app-router";
 import { Component, createEffect, createResource, createSignal, ResourceFetcher, Show } from "solid-js";
 import auth, { AuthResponse, AuthUser } from "../../../store/auth";
 import Button from "../../button/Button";
@@ -43,6 +44,8 @@ export const performRegister: RegisterFetcher = async (registerBody) => {
 };
 
 const RegisterForm: Component = () => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = createSignal<string>("");
   const [password, setPassword] = createSignal<string>("");
   const [, setToken] = auth;
@@ -65,7 +68,10 @@ const RegisterForm: Component = () => {
 
   createEffect(() => {
     const authResponse = data();
-    if (authResponse && !!authResponse.access_token) setToken(authResponse.access_token);
+    if (authResponse && !!authResponse.access_token) {
+      setToken(authResponse.access_token);
+      navigate('/home');
+    }
   });
 
   return (

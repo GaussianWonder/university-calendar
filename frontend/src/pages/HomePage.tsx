@@ -1,5 +1,6 @@
 import { Component } from 'solid-js';
 import InformativeLabel from '../components/app/label/InformativeLabel';
+import UserSearchPopup from '../components/app/popup/UserSearch';
 import Button from '../components/button/Button';
 import SidebarNav from '../components/nav/SidebarNav';
 import PageHeading from '../layouts/PageHeading';
@@ -40,8 +41,13 @@ const HomePage: Component = () => {
           </div>
         }
       >
-        Some content here
-        <div i-bx-x w-10 h-10 rotate-45 />
+        <br />
+        <UserSearchPopup
+          onSelect={(item) => {
+            console.log(`${item.id} was selected`);
+          }}
+          listClass="mt-1 flex flex-col gap-1"
+        />
       </PageHeading>
     </SidebarLayout>
   );
