@@ -1,5 +1,6 @@
 import { Component } from 'solid-js';
 import InformativeLabel from '../components/app/label/InformativeLabel';
+import UserList from '../components/app/list/UserList';
 import UserSearchPopup from '../components/app/popup/UserSearch';
 import Button from '../components/button/Button';
 import SidebarNav from '../components/nav/SidebarNav';
@@ -47,6 +48,10 @@ const HomePage: Component = () => {
             console.log(`${item.id} was selected`);
           }}
           listClass="mt-1 flex flex-col gap-1"
+        />
+        <br />
+        <UserList
+          class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1'
         />
       </PageHeading>
     </SidebarLayout>

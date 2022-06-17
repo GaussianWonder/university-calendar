@@ -35,6 +35,8 @@ export function SearchPopupComponent<T>({ fetcher, debounceTimeout, ItemRenderer
       class: '',
       containerClass: '',
       listClass: '',
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSelect: () => {},
     }, props);
 
     const [authState] = auth;
@@ -113,8 +115,9 @@ export function SearchPopupComponent<T>({ fetcher, debounceTimeout, ItemRenderer
           </div>
         </div>
         <div
+          bg-white shadow border border-gray-200
           transition opacity-0 group-hover:opacity-100
-          class={`absolute min-w-xs max-h-sm overflow-auto ${merged.listClass}`}
+          class={`absolute z-10 min-w-xs max-h-sm overflow-auto ${merged.listClass}`}
         >
           <Show when={isFocused() && data && !data.loading}>
             <For each={data()}>{
