@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { FindManyOptions, Repository, UpdateResult } from 'typeorm';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
 import { UpdateFacultyDto } from './dto/update-faculty.dto';
 import { Faculty } from './entities/faculty.entity';
@@ -28,8 +28,8 @@ export class FacultyService {
     }
   }
 
-  async findAll(): Promise<Faculty[]> {
-    return this.facultyRepository.find();
+  async findAll(options?: FindManyOptions<Faculty>): Promise<Faculty[]> {
+    return this.facultyRepository.find(options);
   }
 
   async findOne(id: number): Promise<Faculty> {

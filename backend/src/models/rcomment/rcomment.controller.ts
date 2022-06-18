@@ -9,6 +9,7 @@ import {
   UseGuards,
   BadRequestException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { RcommentService } from './rcomment.service';
 import { CreateRcommentDto } from './dto/create-rcomment.dto';
@@ -50,8 +51,10 @@ export class RcommentController {
   })
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all RComments.' })
-  async findAll() {
-    return await this.rcommentService.findAll();
+  async findAll(@Query('taskId') taskId?: number) {
+    return await this.rcommentService.findAll(
+      taskId ? { where: { taskId } } : undefined,
+    );
   }
 
   @Get(':id')

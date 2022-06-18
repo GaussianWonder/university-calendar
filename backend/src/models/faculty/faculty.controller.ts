@@ -9,6 +9,7 @@ import {
   UseGuards,
   BadRequestException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { FacultyService } from './faculty.service';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
@@ -66,9 +67,14 @@ export class FacultyController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all faculties.' })
-  async findAll(@ReqUser() user: User) {
+  async findAll(
+    @ReqUser() user: User,
+    @Query('universityId') universityId?: number,
+  ) {
     const [faculties, abilityFilter] = await Promise.all([
-      this.facultyService.findAll(),
+      this.facultyService.findAll(
+        universityId ? { where: { universityId } } : undefined,
+      ),
       this.userService.canUserFilter(user, Action.Read),
     ]);
 

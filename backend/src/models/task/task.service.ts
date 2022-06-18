@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Delta from 'quill-delta';
-import { Repository, UpdateResult } from 'typeorm';
+import { FindManyOptions, Repository, UpdateResult } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -30,8 +30,8 @@ export class TaskService {
     }
   }
 
-  async findAll(): Promise<Task[]> {
-    return this.taskRepository.find();
+  async findAll(options?: FindManyOptions<Task>): Promise<Task[]> {
+    return this.taskRepository.find(options);
   }
 
   async findOne(id: number): Promise<Task> {

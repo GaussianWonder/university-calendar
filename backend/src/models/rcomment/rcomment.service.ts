@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Delta from 'quill-delta';
-import { Repository, UpdateResult } from 'typeorm';
+import { FindManyOptions, Repository, UpdateResult } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { CreateRcommentDto } from './dto/create-rcomment.dto';
 import { UpdateRcommentDto } from './dto/update-rcomment.dto';
@@ -34,8 +34,8 @@ export class RcommentService {
     }
   }
 
-  async findAll(): Promise<Rcomment[]> {
-    return this.rcommentRepository.find();
+  async findAll(options?: FindManyOptions<Rcomment>): Promise<Rcomment[]> {
+    return this.rcommentRepository.find(options);
   }
 
   async findOne(id: number): Promise<Rcomment> {

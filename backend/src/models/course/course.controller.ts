@@ -9,6 +9,7 @@ import {
   UseGuards,
   BadRequestException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CheckAbilities } from 'src/auth/ability/abilities.decorator';
@@ -65,9 +66,11 @@ export class CourseController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all courses.' })
-  async findAll(@ReqUser() user: User) {
+  async findAll(@ReqUser() user: User, @Query('facultyId') facultyId?: number) {
     const [courses, abilityFilter] = await Promise.all([
-      this.courseService.findAll(),
+      this.courseService.findAll(
+        facultyId ? { where: { facultyId } } : undefined,
+      ),
       this.userService.canUserFilter(user, Action.Read),
     ]);
 

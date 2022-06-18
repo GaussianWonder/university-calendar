@@ -9,6 +9,7 @@ import {
   UseGuards,
   BadRequestException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -62,9 +63,9 @@ export class TaskController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all tasks.' })
-  async findAll(@ReqUser() user: User) {
+  async findAll(@ReqUser() user: User, @Query('courseId') courseId?: number) {
     const [tasks, abilityFilter] = await Promise.all([
-      this.taskService.findAll(),
+      this.taskService.findAll(courseId ? { where: { courseId } } : undefined),
       this.userService.canUserFilter(user, Action.Read),
     ]);
 
