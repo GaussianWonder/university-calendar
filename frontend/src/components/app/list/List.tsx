@@ -1,24 +1,23 @@
-import { Accessor, Component, createEffect, createResource, createSignal, For, mergeProps, ResourceFetcher, Show } from 'solid-js';
-import Input from '../input/Input';
+import { Component, createEffect, createResource, createSignal, For, mergeProps, ResourceFetcher, Show } from 'solid-js';
 import auth from "../../../store/auth";
 
-export interface FetchParams<D> {
-  params: D;
+export interface ListFetchParams<P> {
+  params: P;
   token: string;
 }
 
-export interface ListProps<T> {
+export interface ListProps<T, P> {
+  params: P;
   class?: string;
   onSelect?: (item: T) => void;
 }
 
-export interface ListFactoryProps<T, D> {
-  fetcher: ResourceFetcher<FetchParams<D>, T[]>;
+export interface ListFactoryProps<T, P> {
+  fetcher: ResourceFetcher<ListFetchParams<P>, T[]>;
   ItemRenderer: Component<{ item: T; onClick: () => void; }>;
-  params: D;
 }
 
-export function ListComponent<T, D>({ fetcher, ItemRenderer, params }: ListFactoryProps<T, D>): Component<ListProps<T>> {
+export function ListComponent<T, P=undefined>({ fetcher, ItemRenderer }: ListFactoryProps<T, P>): Component<ListProps<T, P>> {
   return (props) => {
     const merged = mergeProps({
       class: '',
@@ -32,16 +31,21 @@ export function ListComponent<T, D>({ fetcher, ItemRenderer, params }: ListFacto
       return state.access_token;
     };
 
-    const [fetchParams, setFetchParams] = createSignal<FetchParams<D>>({
-      params: params,
+    const inputParams = () => {
+      return props.params;
+    };
+
+    const [fetchParams, setFetchParams] = createSignal<ListFetchParams<P>>({
+      params: inputParams(),
       token: accessToken(),
     });
 
     createEffect(() => {
-      // const newParams = params();
+      const newParams = inputParams();
       const token = accessToken();
+
       setFetchParams({
-        params: params,
+        params: newParams,
         token: token,
       });
     });

@@ -6,11 +6,11 @@ function shortErrorMessage(response: Response): string {
   return `${response.statusText} (${response.status})`;
 }
 
-function throwResponseError(response: Response) {
+function throwResponseError(response: Response): never {
   throw new Error(shortErrorMessage(response));
 }
 
-function throwIfError(response: Response) {
+function throwIfError(response: Response): void {
   if (isErrorResponse(response)) {
     throwResponseError(response);
   }
@@ -23,7 +23,9 @@ function containsMandatoryKeys(obj: any, keys: string[] = []): [boolean, string[
   return [true, []];
 }
 
-export function expectJson<T>(mandatoryKeys: string[] = []): ((response: Response) => Promise<T>) {
+export type ResolvedRespone<T> = (response: Response) => Promise<T>;
+
+export function expectJson<T>(mandatoryKeys: string[] = []): ResolvedRespone<T> {
   return async (response: Response) => {
     throwIfError(response);
 
@@ -36,7 +38,7 @@ export function expectJson<T>(mandatoryKeys: string[] = []): ((response: Respons
   };
 }
 
-export function expectJsonArray<T>(mandatoryKeys: string[] = []): ((response: Response) => Promise<T[]>) {
+export function expectJsonArray<T>(mandatoryKeys: string[] = []): ResolvedRespone<T[]> {
   return async (response: Response) => {
     throwIfError(response);
 

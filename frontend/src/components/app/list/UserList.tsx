@@ -24,10 +24,6 @@ const UserSearchPopup = ListComponent<User, { username: string; limit: number; }
 
     return users;
   },
-  params: {
-    username: '',
-    limit: 15,
-  },
   ItemRenderer: (props) => {
     const onClick = () => props.onClick;
     const item = () => props.item;

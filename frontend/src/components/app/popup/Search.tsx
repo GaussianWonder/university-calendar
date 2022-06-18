@@ -5,27 +5,29 @@ import auth from "../../../store/auth";
 import clickOutside from '../../../directives/click-outside';
 false && clickOutside;
 
-export interface FetchParams {
+export interface SearchFetchParams<P> {
   search: string;
   token: string;
+  params: P;
 }
 
-export interface SearchPopupProps<T> {
+export interface SearchPopupProps<T, P> {
   id?: string;
   label?: string;
   class?: string;
   containerClass?: string;
   listClass?: string;
   onSelect?: (item: T) => void;
+  params: P;
 }
 
-export interface SearchPopupFactoryProps<T> {
-  fetcher: ResourceFetcher<FetchParams, T[]>;
+export interface SearchPopupFactoryProps<T, P> {
+  fetcher: ResourceFetcher<SearchFetchParams<P>, T[]>;
   ItemRenderer: Component<{ item: T; onClick: () => void; }>;
   debounceTimeout?: number;
 }
 
-export function SearchPopupComponent<T>({ fetcher, debounceTimeout, ItemRenderer }: SearchPopupFactoryProps<T>): Component<SearchPopupProps<T>> {
+export function SearchPopupComponent<T, P=undefined>({ fetcher, debounceTimeout, ItemRenderer }: SearchPopupFactoryProps<T, P>): Component<SearchPopupProps<T, P>> {
   const inputDebounce: number = debounceTimeout ?? 500;
 
   return (props) => {
@@ -45,10 +47,15 @@ export function SearchPopupComponent<T>({ fetcher, debounceTimeout, ItemRenderer
       return state.access_token;
     };
 
+    const inputParams = () => {
+      return props.params;
+    };
+
     const [isFocused, setIsFocused] = createSignal<boolean>(false);
-    const [fetchParams, setFetchParams] = createSignal<FetchParams>({
+    const [fetchParams, setFetchParams] = createSignal<SearchFetchParams<P>>({
       search: '',
       token: accessToken(),
+      params: inputParams(),
     });
 
     const [triggerSearch, cleanSearchDebouncer] = createDebounce<(newVal: string) => void>(
@@ -56,6 +63,7 @@ export function SearchPopupComponent<T>({ fetcher, debounceTimeout, ItemRenderer
         setFetchParams({
           search: newVal,
           token: accessToken(),
+          params: inputParams(),
         });
       },
       inputDebounce,
