@@ -52,7 +52,7 @@ const HomePage: Component = () => {
         />
         <br />
         <UserList
-          class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1'
+          class='gap-1'
           onSelect={(item) => {
             console.log(`${item.id} was selected`);
           }}

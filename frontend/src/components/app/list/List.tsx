@@ -1,5 +1,7 @@
 import { Component, createEffect, createResource, createSignal, For, mergeProps, ResourceFetcher, Show } from 'solid-js';
 import auth from "../../../store/auth";
+import Button from '../../button/Button';
+import LeftRightStrip from '../../strip/LeftRightStrip';
 
 export interface ListFetchParams<P> {
   params: P;
@@ -54,9 +56,42 @@ export function ListComponent<T, P=undefined>({ fetcher, ItemRenderer }: ListFac
       deferStream: true,
     });
 
+    const [isGridView, setIsGridView] = createSignal<boolean>(true);
+
+    const listContainerClass = () => {
+      const baseClass = 'grid grid-cols-1';
+      const isGrid = isGridView();
+      
+      if (isGrid)
+        return `${baseClass} md:grid-cols-2 lg:grid-cols-3`;
+      return baseClass;
+    };
+
     return (
       <Show when={data && !data.loading} fallback={<div i-bx-loader-alt w-10 h-10 text-gray-400 animate-spin />}>
-        <div class={merged.class}>
+        <LeftRightStrip
+          class="px-4 py-2"
+          left={(
+            <Button
+              style='secondary'
+              onClick={() => { setIsGridView(!isGridView()) }}
+            >
+              <Show when={isGridView} fallback={<div i-bx-list-ul w-6 h-6 text-gray-500 cursor-pointer />}>
+                <div i-bx-grid-alt w-6 h-6 text-gray-500 />
+              </Show>
+            </Button>
+          )}
+          right={(
+            <Button
+              style='primary'
+              onClick={() => { refetch() }}
+            >
+              <div i-bx-refresh w-6 h-6 text-white />
+            </Button>
+          )}
+        />
+
+        <div class={`${listContainerClass()} ${merged.class}`}>
           <For each={data()}>{
             (item) => <ItemRenderer item={item} onClick={() => { merged.onSelect(item) }} />
           }</For>
