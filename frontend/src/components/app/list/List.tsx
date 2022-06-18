@@ -76,7 +76,7 @@ export function ListComponent<T, P=undefined>({ fetcher, ItemRenderer }: ListFac
               style='secondary'
               onClick={() => { setIsGridView(!isGridView()) }}
             >
-              <Show when={isGridView} fallback={<div i-bx-list-ul w-6 h-6 text-gray-500 cursor-pointer />}>
+              <Show when={isGridView()} fallback={<div i-bx-list-ul w-6 h-6 text-gray-500 cursor-pointer />}>
                 <div i-bx-grid-alt w-6 h-6 text-gray-500 />
               </Show>
             </Button>
