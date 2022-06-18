@@ -8,12 +8,17 @@ import {
   Subjects,
 } from 'src/auth/ability/ability.factory';
 import { FindManyOptions, Like, Repository } from 'typeorm';
+import { Rcomment } from '../rcomment/entities/rcomment.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
+  CourseRole,
+  FacultyRole,
   Role,
   RoleCategory,
   RoleSubjectId,
   RoleTitle,
+  TaskRole,
+  UniversityRole,
 } from './entities/role.entity';
 import { User } from './entities/user.entity';
 
@@ -39,6 +44,16 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Rcomment)
+    private readonly rcommentRepository: Repository<Rcomment>,
+    @InjectRepository(UniversityRole)
+    private readonly universityRoleRepository: Repository<UniversityRole>,
+    @InjectRepository(FacultyRole)
+    private readonly facultyRoleRepository: Repository<FacultyRole>,
+    @InjectRepository(CourseRole)
+    private readonly courseRoleRepository: Repository<CourseRole>,
+    @InjectRepository(TaskRole)
+    private readonly taskRoleRepository: Repository<TaskRole>,
     private readonly abilityFactory: AbilityFactory,
   ) {}
 
@@ -108,16 +123,38 @@ export class UserService {
     });
   }
 
-  async assignRole(user: User, roleOpts: RoleOpts): Promise<Role> {
-    if (Object.keys(roleOpts.subject).length !== 1)
-      throw new BadRequestException('Subject must be a single unique key');
-
-    const role = this.roleRepository.create({
+  async createRole<R extends Role>(
+    user: User,
+    roleOpts: RoleOpts,
+  ): Promise<Role> {
+    const genericConstructOpts = {
       userId: user.id,
       category: roleOpts.category,
       title: roleOpts.title,
       ...roleOpts.subject,
-    });
+    };
+
+    switch (roleOpts.category) {
+      case RoleCategory.University:
+        return this.universityRoleRepository.create(genericConstructOpts);
+      case RoleCategory.Faculty:
+        return this.facultyRoleRepository.create(genericConstructOpts);
+      case RoleCategory.Course:
+        return this.courseRoleRepository.create(genericConstructOpts);
+      case RoleCategory.Task:
+        return this.taskRoleRepository.create(genericConstructOpts);
+
+      default:
+        throw new BadRequestException('Invalid role category');
+    }
+  }
+
+  async assignRole(user: User, roleOpts: RoleOpts): Promise<Role> {
+    if (Object.keys(roleOpts.subject).length !== 1)
+      throw new BadRequestException('Subject must be a single unique key');
+
+    const role = await this.createRole(user, roleOpts);
+
     return this.roleRepository.save(role);
   }
 }
