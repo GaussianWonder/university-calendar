@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+
+/* TODO change these into tailwind config */
+html, body {
+  font-family: 'Nunito', sans-serif !important;
+}

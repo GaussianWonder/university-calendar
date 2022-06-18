@@ -2,7 +2,7 @@ import { expectJsonArray } from "../../../logic/fetching";
 import { User } from "../../../types/models/user";
 import ListComponent from "./List";
 
-const UserSearchPopup = ListComponent<User, { username: string; limit: number; }>({
+const UserList = ListComponent<User, { username: string; limit: number; }>({
   fetcher: async ({ params, token }) => {
     const urlParams = new URLSearchParams({
       username: params.username,
@@ -44,4 +44,4 @@ const UserSearchPopup = ListComponent<User, { username: string; limit: number; }
   },
 });
 
-export default UserSearchPopup;
+export default UserList;

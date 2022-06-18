@@ -14,8 +14,10 @@ export interface ListProps<T, P> {
   onSelect?: (item: T) => void;
 }
 
+export type ListFetcher<T, P> = ResourceFetcher<ListFetchParams<P>, T[]>;
+
 export interface ListFactoryProps<T, P> {
-  fetcher: ResourceFetcher<ListFetchParams<P>, T[]>;
+  fetcher: ListFetcher<T, P>;
   ItemRenderer: Component<{ item: T; onClick: () => void; }>;
 }
 
@@ -68,7 +70,7 @@ export function ListComponent<T, P=undefined>({ fetcher, ItemRenderer }: ListFac
     };
 
     return (
-      <Show when={data && !data.loading} fallback={<div i-bx-loader-alt w-10 h-10 text-gray-400 animate-spin />}>
+      <Show when={data && !data.loading} fallback={<div i-bx-loader-alt w-10 h-10 text-gray-400 animate-spin></div>}>
         <LeftRightStrip
           class="px-4 py-2"
           left={(

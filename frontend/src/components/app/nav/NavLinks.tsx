@@ -9,6 +9,26 @@ const NavLinks: Component = () => {
         name='Home'
         iconClass='i-bx-home'
       />
+      <SidebarLink
+        href='/university'
+        name='Universities'
+        iconClass='i-bx-building'
+      />
+      <SidebarLink
+        href='/faculty'
+        name='Faculties'
+        iconClass='i-bx-bxs-school'
+      />
+      <SidebarLink
+        href='/course'
+        name='Courses'
+        iconClass='i-bx-book'
+      />
+      <SidebarLink
+        href='/task'
+        name='Tasks'
+        iconClass='i-bx-task'
+      />
     </>
   );
 };

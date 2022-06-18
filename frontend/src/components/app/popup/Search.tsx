@@ -21,8 +21,10 @@ export interface SearchPopupProps<T, P> {
   params: P;
 }
 
+export type SearchFetcher<T, P> = ResourceFetcher<SearchFetchParams<P>, T[]>;
+
 export interface SearchPopupFactoryProps<T, P> {
-  fetcher: ResourceFetcher<SearchFetchParams<P>, T[]>;
+  fetcher: SearchFetcher<T, P>;
   ItemRenderer: Component<{ item: T; onClick: () => void; }>;
   debounceTimeout?: number;
 }
@@ -102,13 +104,13 @@ export function SearchPopupComponent<T, P=undefined>({ fetcher, debounceTimeout,
             </Show>
   
             <div
-              i-bx-refresh
-              w-6 h-6
-              text-gray-500
-              cursor-pointer
               class="absolute transition inset-r-0 group-hover:translate-x-6"
+              border-px border-gray-300 rounded-full bg-white
+              cursor-pointer
               onClick={() => { refetch(); focusSelector() }}
-            />
+            >
+              <div i-bx-refresh w-6 h-6 text-gray-500 />
+            </div>
   
             <Input
               id={merged.id}
