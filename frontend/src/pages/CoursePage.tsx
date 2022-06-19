@@ -98,7 +98,7 @@ const CoursePage: Component = () => {
             <div>
               <SolidQuill
                 class="bg-gray-100 min-h-[200px] max-h-sm overflow-auto rounded-lg"
-                placeholder="loading..."
+                placeholder="No description"
                 ref={quill}
                 as="div"
                 contentEditable={false}
