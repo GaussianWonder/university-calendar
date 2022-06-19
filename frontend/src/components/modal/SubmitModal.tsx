@@ -1,4 +1,4 @@
-import { Component, ParentProps, children as resolveChildren, Show, JSX } from "solid-js";
+import { Component, ParentProps, children as resolveChildren, Show } from "solid-js";
 import Button from "../button/Button";
 import LineBreak from "../LineBreak";
 import LeftRightStrip from "../strip/LeftRightStrip";

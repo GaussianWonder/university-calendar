@@ -1,7 +1,7 @@
 // https://github.com/amoutonbrady/solid-quill/blob/main/src/solid-quill.tsx
 
 import { Dynamic } from "solid-js/web";
-import { mergeProps, createEffect, JSX, onMount, splitProps, Component, children } from "solid-js";
+import { mergeProps, createEffect, JSX, onMount, splitProps, Component } from "solid-js";
 
 import type {
   EditorChangeHandler,

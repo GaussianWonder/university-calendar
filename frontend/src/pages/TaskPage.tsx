@@ -11,8 +11,6 @@ import UserSearchPopup from "../components/app/popup/UserSearch";
 import Button from "../components/button/Button";
 import { SolidQuill } from "../components/quill/SolidQuill";
 import NotFoundHeading from "../components/app/errors/NoFoundHeading";
-import { Course } from "../types/models/course";
-import TaskList from "../components/app/list/TaskList";
 import { Task } from "../types/models/task";
 import CommentList from "../components/app/list/CommentList";
 
