@@ -123,10 +123,7 @@ export class UserService {
     });
   }
 
-  async createRole<R extends Role>(
-    user: User,
-    roleOpts: RoleOpts,
-  ): Promise<Role> {
+  async createRole(user: User, roleOpts: RoleOpts): Promise<Role> {
     const genericConstructOpts = {
       userId: user.id,
       category: roleOpts.category,

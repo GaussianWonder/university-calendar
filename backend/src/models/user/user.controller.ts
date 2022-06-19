@@ -15,6 +15,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ReqUser } from 'src/common/decorators/user.decorator';
 import { AddUserRoleDto } from './dto/add-user-role';
 import { FindUsersDto } from './dto/find-users.dto';
+import { RoleSubjectId } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
@@ -84,16 +85,13 @@ export class UserController {
     ].includes(idField);
     if (!isIdFieldValid) throw new BadRequestException('Invalid category');
 
-    let subject: Record<
-      'universityId' | 'facultyId' | 'courseId' | 'taskId',
-      number
-    >;
+    const subject: Record<string, number> = {};
     subject[idField] = subjectId;
 
     return await this.userService.assignRole(user, {
       category,
       title,
-      subject,
+      subject: subject as RoleSubjectId,
     });
   }
 }
