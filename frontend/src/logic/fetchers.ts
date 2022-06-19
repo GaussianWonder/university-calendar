@@ -4,8 +4,11 @@ import { Faculty } from "../types/models/faculty";
 import { University } from "../types/models/university";
 import { Task } from "../types/models/task";
 import { parseDeltaContent, parseDeltaDescription } from "./delta-parse";
-import { expectJsonArray } from "./fetching";
+import { expectJson, expectJsonArray } from "./fetching";
 import { Rcomment } from "../types/models/rcomment";
+import { Role, RoleCategory, RoleTitle } from "../types/models/user";
+
+// LIST fetchers
 
 export const universityListFetcher: ListFetcher<University, undefined> = async ({ token }) => {
   const universities = await fetch(`http://localhost:3000/university`, {
@@ -115,4 +118,34 @@ export const rcommentListFetcher: ListFetcher<Rcomment, { taskId?: number }> = a
     });
 
   return comments;
+};
+
+// Other promise based fetching
+
+export interface InviteUserParams {
+  userId: number;
+  subjectId: number;
+  title: RoleTitle;
+  category: RoleCategory;
+  token: string;
+}
+
+export const inviteUser = async ({ token, ...rest }: InviteUserParams): Promise<Role> => {
+  const role = await fetch(`http://localhost:3000/users/role`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      ...rest,
+    }),
+  })
+    .then(expectJson<Role>(['id', 'userId', 'title', 'category']))
+    .catch(e => {
+      console.error(e);
+      return null as Role;
+    });
+
+  return role;
 };

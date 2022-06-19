@@ -21,7 +21,7 @@ const invalidToken: AuthResponse['access_token'] = '';
 const invalidUser: AuthUser = {
   id: -1,
   username: '',
-  role: '',
+  role: UserRole.Student,
 };
 
 const initAuthState: AuthState = {

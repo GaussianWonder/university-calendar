@@ -7,12 +7,13 @@ import { expectJson } from "../logic/fetching";
 import Quill from "quill";
 import SidebarNav from "../components/nav/SidebarNav";
 import InformativeLabel from "../components/app/label/InformativeLabel";
-import UserSearchPopup from "../components/app/popup/UserSearch";
 import Button from "../components/button/Button";
 import { SolidQuill } from "../components/quill/SolidQuill";
 import NotFoundHeading from "../components/app/errors/NoFoundHeading";
 import { Task } from "../types/models/task";
 import CommentList from "../components/app/list/CommentList";
+import InviteUser from "../components/app/popup/InviteUser";
+import { RoleCategory } from "../types/models/user";
 
 const TaskPage: Component = () => {
   let quill: Quill;
@@ -75,14 +76,7 @@ const TaskPage: Component = () => {
         actions={
           <Show when={isFound()}>
             <div class='flex gap-2'>
-              <UserSearchPopup
-                onSelect={(item) => {
-                  console.log(`${item.id} was selected`);
-                }}
-                listClass="flex flex-col gap-1"
-                params={undefined}
-                label="Invite user"
-              />
+              <InviteUser subjectId={ID()} category={RoleCategory.Task} />
               <Button style='warning'>
                 New
               </Button>

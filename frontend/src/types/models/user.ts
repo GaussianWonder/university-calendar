@@ -39,3 +39,9 @@ export interface Role {
   taskId?: number;
   courseId?: number;
 }
+
+export type RoleSubject =
+  | { universityId: number; }
+  | { facultyId: number; }
+  | { taskId: number; }
+  | { courseId: number; };
