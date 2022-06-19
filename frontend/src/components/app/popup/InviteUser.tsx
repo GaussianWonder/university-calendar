@@ -13,9 +13,9 @@ const InviteUser: Component<InviteUserProps> = (props) => {
   const [authState] = auth;
   const [title, setTitle] = createSignal<RoleTitle>(RoleTitle.Reader);
 
-  const isAdmin = () => {
+  const canInvite = () => {
     const { user } = authState();
-    return user.role === UserRole.Admin;
+    return user.role !== UserRole.Student;
   };
 
   const isAuthed = () => {
@@ -40,7 +40,7 @@ const InviteUser: Component<InviteUserProps> = (props) => {
     });
 
   return (
-    <Show when={isAdmin() && isAuthed()}>
+    <Show when={isAuthed() && canInvite()}>
       {/* Select box */}
       <div class="relative" h-full>
         <div class="absolute" h-full flex items-center mx-1>
