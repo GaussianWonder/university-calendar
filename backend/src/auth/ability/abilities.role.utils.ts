@@ -1,3 +1,5 @@
+// The RoleIdentifier works with decoupled role information types such that Model Roles can support different titles and categories.
+
 export interface RoleInfo<Subject, Title> {
   subject: Subject;
   subjectId: number;
@@ -6,10 +8,25 @@ export interface RoleInfo<Subject, Title> {
 
 export type Mapper<T, U> = (t: T) => U;
 
+/**
+ * A class that provides useful information regarding a role array of a given category.
+ *
+ * @export
+ * @class RoleIdentifier
+ * @template Subject The subject this role targets. Usually one of the models
+ * @template SubjectRole The Role type for <Subject> model.
+ * @template RoleTitle The Title type for <SubjectRole>, usually a string, string literals, enum, etc.
+ */
 export default class RoleIdentifier<Subject, SubjectRole, RoleTitle> {
   private roleInfoProvider: Mapper<SubjectRole, RoleInfo<Subject, RoleTitle>>;
   private titlesMap: Map<number, RoleInfo<Subject, RoleTitle>[]> = new Map();
 
+  /**
+   * Creates an instance of RoleIdentifier.
+   * @param {Mapper<SubjectRole, RoleInfo<Subject, RoleTitle>>} roleInfoProvider maps a SubjectRole to a general form of Role to be worked with internally
+   * @param {(SubjectRole[] | null)} [roleArray=null] optional init array to pass the mapper through
+   * @memberof RoleIdentifier
+   */
   constructor(
     roleInfoProvider: Mapper<SubjectRole, RoleInfo<Subject, RoleTitle>>,
     roleArray: SubjectRole[] | null = null,
@@ -20,6 +37,14 @@ export default class RoleIdentifier<Subject, SubjectRole, RoleTitle> {
     }
   }
 
+  /**
+   * After successfully initializing the RoleIdentifier with a roleInfoProvider,
+   *  you can use this to append RoleInfo objects after creation.
+   *
+   * @param {SubjectRole[]} roleArray an array of SubjectRole objects
+   * @return {RoleIdentifier} this
+   * @memberof RoleIdentifier
+   */
   public from(roleArray: SubjectRole[]) {
     roleArray.map(this.roleInfoProvider).forEach((roleInfo) => {
       const { subjectId } = roleInfo;
@@ -62,6 +87,13 @@ export default class RoleIdentifier<Subject, SubjectRole, RoleTitle> {
     );
   }
 
+  /**
+   * General match function that takes a predicate and returns RoleInfo objects
+   *
+   * @param {(role: RoleInfo<Subject, RoleTitle>) => boolean} predicate
+   * @return {*}  {RoleInfo<Subject, RoleTitle>[]}
+   * @memberof RoleIdentifier
+   */
   public rolesMatching(
     predicate: (role: RoleInfo<Subject, RoleTitle>) => boolean,
   ): RoleInfo<Subject, RoleTitle>[] {
@@ -71,16 +103,35 @@ export default class RoleIdentifier<Subject, SubjectRole, RoleTitle> {
       .filter(predicate);
   }
 
+  /**
+   * Same as rolesMatching, but maps the result to ids instead of keeping the whole RoleInfo object.
+   *
+   * @param {(role: RoleInfo<Subject, RoleTitle>) => boolean} predicate
+   * @return {*}  {number[]}
+   * @memberof RoleIdentifier
+   */
   public idsMatching(
     predicate: (role: RoleInfo<Subject, RoleTitle>) => boolean,
   ): number[] {
     return this.rolesMatching(predicate).map((role) => role.subjectId);
   }
 
+  /**
+   * Returns an array of all subjectIds that have a title in the titleMap
+   *
+   * @readonly
+   * @memberof RoleIdentifier
+   */
   get ids() {
     return Array.from(this.titlesMap.keys());
   }
 
+  /**
+   * For every matched RoleTitle in the titleMap, call the callback function.
+   *
+   * @param {Array<[RoleTitle, (info: RoleInfo<Subject, RoleTitle>) => void]>} matchers
+   * @memberof RoleIdentifier
+   */
   public match(
     matchers: Array<[RoleTitle, (info: RoleInfo<Subject, RoleTitle>) => void]>,
   ) {
@@ -94,6 +145,14 @@ export default class RoleIdentifier<Subject, SubjectRole, RoleTitle> {
     });
   }
 
+  /**
+   * For every RoleTitle different from the one provided, call the calback function.
+   *
+   * @param {Array<
+   *       [RoleTitle, (info: RoleInfo<Subject, RoleTitle>[]) => void]
+   *     >} matchers
+   * @memberof RoleIdentifier
+   */
   public notMatch(
     matchers: Array<
       [RoleTitle, (info: RoleInfo<Subject, RoleTitle>[]) => void]
@@ -109,6 +168,16 @@ export default class RoleIdentifier<Subject, SubjectRole, RoleTitle> {
     });
   }
 
+  /**
+   * For any RoleTitle that can be found in the titleMap, call the callback function.
+   * This does not serve many usecases, the input it provides to the callback function is hard to manage.
+   * Use this only when don't actually need the parameter provided in the callback.
+   *
+   * @param {Array<
+   *       [RoleTitle[], (info: RoleInfo<Subject, RoleTitle>[]) => void]
+   *     >} matchers
+   * @memberof RoleIdentifier
+   */
   public multipleMatch(
     matchers: Array<
       [RoleTitle[], (info: RoleInfo<Subject, RoleTitle>[]) => void]

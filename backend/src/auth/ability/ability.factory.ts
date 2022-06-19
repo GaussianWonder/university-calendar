@@ -15,7 +15,6 @@ import { University } from 'src/models/university/entities/university.entity';
 import {
   CourseRole,
   FacultyRole,
-  Role,
   RoleTitle,
   TaskRole,
   UniversityRole,
