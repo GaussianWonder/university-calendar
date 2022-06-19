@@ -10,7 +10,7 @@ import RegisterPage from './pages/RegisterPage';
 import TaskPage from './pages/TaskPage';
 import TasksPage from './pages/TasksPage';
 import UniversityPage from './pages/UniversityPage';
-import UniversitiesPage from './pages/UnversitiesPage';
+import UniversitiesPage from './pages/UniversitiesPage';
 
 const App: Component = () => {
   return (

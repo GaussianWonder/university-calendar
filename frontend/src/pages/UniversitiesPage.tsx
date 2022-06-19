@@ -2,10 +2,12 @@ import { Component, createSignal } from 'solid-js';
 import InformativeLabel from '../components/app/label/InformativeLabel';
 import UniversityList from '../components/app/list/UniversityList';
 import Button from '../components/button/Button';
+import ShowIfUserRole from '../components/flow/ShowIfAdmin';
 import CreateUniversityModal from '../components/modal/CreateUniversityModal';
 import SidebarNav from '../components/nav/SidebarNav';
 import PageHeading from '../layouts/PageHeading';
 import SidebarLayout from '../layouts/SidebarLayout';
+import { UserRole } from '../types/models/user';
 
 const UniversitiesPage: Component = () => {
   const [showCreateModal, setShowCreateModal] = createSignal<boolean>(false);
@@ -23,19 +25,23 @@ const UniversitiesPage: Component = () => {
         }
         actions={
           <div class='flex gap-2'>
-            <Button style='warning' onClick={() => { setShowCreateModal(!showCreateModal()) }}>
-              New
-            </Button>
+            <ShowIfUserRole role={UserRole.Admin}>
+              <Button style='warning' onClick={() => { setShowCreateModal(true) }}>
+                New University
+              </Button>
+            </ShowIfUserRole>
           </div>
         }
       >
         <UniversityList class='gap-1' params={undefined} />
 
-        <CreateUniversityModal
-          show={showCreateModal()}
-          onClose={() => { setShowCreateModal(false) }}
-          onSubmit={(e) => { console.log(e) }}
-        />
+        <ShowIfUserRole role={UserRole.Admin}>
+          <CreateUniversityModal
+            show={showCreateModal()}
+            onClose={() => { setShowCreateModal(false) }}
+            onSubmit={(e) => { console.log(e) }}
+          />
+        </ShowIfUserRole>
       </PageHeading>
     </SidebarLayout>
   );

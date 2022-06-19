@@ -1,5 +1,5 @@
 import { useParams } from "solid-app-router";
-import { Component, createResource, Show } from "solid-js";
+import { Component, createResource, createSignal, Show } from "solid-js";
 import PageHeading from "../layouts/PageHeading";
 import SidebarLayout from "../layouts/SidebarLayout";
 import auth from "../store/auth";
@@ -14,11 +14,14 @@ import { Task } from "../types/models/task";
 import CommentList from "../components/app/list/CommentList";
 import InviteUser from "../components/app/popup/InviteUser";
 import { RoleCategory } from "../types/models/user";
+import CreateCommentModal from "../components/modal/CreateCommentModal";
 
 const TaskPage: Component = () => {
   let quill: Quill;
   const params = useParams();
   const ID = () => Number(params.id);
+
+  const [showCreateModal, setShowCreateModal] = createSignal<boolean>(false);
 
   const [data, { refetch }] = createResource(
     ID,
@@ -77,8 +80,8 @@ const TaskPage: Component = () => {
           <Show when={isFound()}>
             <div class='flex gap-2'>
               <InviteUser subjectId={ID()} category={RoleCategory.Task} />
-              <Button style='warning'>
-                New
+              <Button style='warning' onClick={() => setShowCreateModal(true)}>
+                New Comment
               </Button>
               <Button style='primary' onClick={() => { refetch() }}>
                 <div i-bx-refresh w-5 h-5 />
@@ -110,6 +113,13 @@ const TaskPage: Component = () => {
             <CommentList class="gap-1" params={{ taskId: ID() }} />
           </div>
         </Show>
+
+        <CreateCommentModal
+          show={showCreateModal()}
+          onClose={() => { setShowCreateModal(false) }}
+          onSubmit={(e) => { console.log(e) }}
+          taskId={ID()}
+        />
       </PageHeading>
     </SidebarLayout>
   );
